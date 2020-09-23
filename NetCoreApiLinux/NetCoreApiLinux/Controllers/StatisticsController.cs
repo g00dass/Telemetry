@@ -1,61 +1,40 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using NetCoreApiLinux.Models.StatInfo;
+using NetCoreApiLinux.Models.AppInfo;
+using NetCoreApiLinux.Models.AppInfo.Requests;
 using Serilog;
 
 namespace NetCoreApiLinux.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("statistics/api")]
     public class StatisticsController : ControllerBase
     {
-        private static readonly IList<StatInfo> stats = new List<StatInfo>();
+        private readonly IAppInfoRepository appInfoRepository;
+        private static readonly ILogger log =  Log.ForContext<StatisticsController>();
 
-        [HttpPost]
-        [Route("addStatInfo")]
-        public void AddOrUpdateStatInfo([FromBody] StatInfoClientId clientId, string appVersion)
+        public StatisticsController(IAppInfoRepository appInfoRepository)
         {
-            var stat = stats.SingleOrDefault(x => Equals(clientId, x.ClientId));
-
-            if (stat == null)
-            {
-                AddStatInfo(clientId, appVersion);
-                return;
-            }
-
-            stat.Data.AppVersion = appVersion;
-            stat.LastUpdatedAt = DateTime.Now;
-
-            Log.Information($"Called {nameof(AddOrUpdateStatInfo)}");
+            this.appInfoRepository = appInfoRepository;
         }
 
-        [HttpGet]
-        [Route("allStats")]
-        public IEnumerable<StatInfo> GetAllStats()
+        [HttpPost("appInfo")]
+        public void AddOrUpdateAppInfo([FromBody] AppInfoRequest request)
         {
-            Log.Information($"Called {nameof(GetAllStats)}");
-            return stats;
+            if (request.Id == null)
+                throw new ArgumentException("Id should not be null.");
+
+            appInfoRepository.AddOrUpdateAppInfo(request);
+
+            log.Information("Called {Method}, {@Request}", nameof(AddOrUpdateAppInfo), request);
         }
 
-        private static void AddStatInfo(StatInfoClientId clientId, string appVersion)
+        [HttpGet("appInfo/all")]
+        public AppInfo[] GetAllAppInfos()
         {
-            var statInfo = new StatInfo
-            {
-                ClientId = clientId,
-                Data = new StatInfoData
-                {
-                    AppVersion = appVersion
-                },
-                LastUpdatedAt = DateTime.Now
-            };
-
-            stats.Add(statInfo);
-            Log.Information($"Called {nameof(AddStatInfo)}");
+            log.Information($"Called {nameof(GetAllAppInfos)}");
+            return appInfoRepository.GetAll().ToArray();
         }
-
-        private static bool Equals(StatInfoClientId l, StatInfoClientId r) =>
-            l.Id == r.Id && l.OsName == r.OsName && l.UserName == r.UserName;
     }
 }

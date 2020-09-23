@@ -1,6 +1,6 @@
 using System;
 
-namespace NetCoreApiLinux.Models.Application
+namespace NetCoreApiLinux.Models.AppInfo
 {
     public class AppInfo
     {
