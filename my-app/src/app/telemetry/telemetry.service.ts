@@ -4,28 +4,28 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
 export interface StatInfo {
-    clientId : ClientId
-    data : Data
+    id : AppId
+    statistics : AppStatistics
     lastUpdatedAt : Date
 }
 
-export interface ClientId {
-    id : string
+export interface AppId {
+    deviceId : string
+}
+
+export interface AppStatistics {
+    appVersion : string
     userName : string
     osName : string
 }
 
-export interface Data {
-    appVersion : string
-}
-
 @Injectable()
 export class TelemetryService {
-    telemetryUrl = 'https://localhost:32774/statistics/';
+    telemetryUrl = 'https://localhost:32774/statistics/api/';
 
     constructor(private http: HttpClient) { }
 
     getStats() {
-        return this.http.get(this.telemetryUrl + 'allStats');
+        return this.http.get(this.telemetryUrl + 'appInfo/all');
   }
 }

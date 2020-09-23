@@ -10,7 +10,7 @@ import {StatInfo, TelemetryService} from './telemetry.service'
 export class TelemetryComponent implements OnInit {
 
   stats : StatInfo[]
-  displayedColumns: string[] = ['clientId.id', 'clientId.userName', 'lastUpdatedAt', 'data.appVersion', 'clientId.osName'];
+  displayedColumns: string[] = ['id.deviceId', 'statistics.userName', 'lastUpdatedAt', 'statistics.appVersion', 'statistics.osName'];
   constructor(private telemetryService: TelemetryService) { }
 
   ngOnInit(): void {
