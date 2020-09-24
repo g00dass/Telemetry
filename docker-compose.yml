@@ -1,7 +1,7 @@
 version: "3"
 services:
   api:
-    build: .
+    build: ./NetCoreApiLinux
     image: aspnetapp
     ports:
       - "32774:443"
@@ -14,3 +14,11 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
       - ./https/aspnetapp.pfx:/https/aspnetapp.pfx:ro
+
+  client:
+    build: ./my-app
+    image: my-app
+    ports:
+      - "81:80"
+    links:
+      - api
