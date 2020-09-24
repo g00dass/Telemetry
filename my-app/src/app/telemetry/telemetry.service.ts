@@ -21,7 +21,7 @@ export interface AppStatistics {
 
 @Injectable()
 export class TelemetryService {
-    telemetryUrl = 'https://localhost:32774/statistics/api/';
+    telemetryUrl = 'https://statistics/api/';
 
     constructor(private http: HttpClient) { }
 

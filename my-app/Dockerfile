@@ -15,5 +15,14 @@ RUN npm run build -- --output-path=./dist/out --configuration $configuration
 # Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
 FROM nginx:1.15
 
-COPY --from=build-stage /app/dist/out/ /usr/share/nginx/html
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+## Remove default nginx website
+RUN rm -rf /usr/share/nginx/html/*
+
+## Copy the ui artifacts to www public folder
+COPY --from=build-stage /app/dist/out/ /var/www/html
+
+## Copy nginx configuration
+COPY ./nginx.conf /etc/nginx/nginx.conf
+
+## Copy nginx locations configuration
+COPY ./locations/prod/frontend.conf /etc/nginx/locations/frontend.conf

@@ -3,6 +3,7 @@ services:
   api:
     build: ./NetCoreApiLinux
     image: aspnetapp
+    container_name: api
     ports:
       - "32774:443"
       - "54023:80"
@@ -18,6 +19,7 @@ services:
   client:
     build: ./my-app
     image: my-app
+    container_name: front
     ports:
       - "81:80"
     links:
