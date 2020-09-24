@@ -1,26 +1,25 @@
 version: "3"
 services:
-  api:
-    build: ./NetCoreApiLinux
-    image: aspnetapp
-    container_name: api
-    ports:
-      - "32774:443"
-      - "54023:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ASPNETCORE_HTTPS_PORT=32774
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=mypassword123
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-    volumes:
-      - ./https/aspnetapp.pfx:/https/aspnetapp.pfx:ro
+    api:
+        build: ./NetCoreApiLinux
+        image: aspnetapp
+        container_name: api
+        ports:
+          - "32774:443"
+          - "54023:80"
+        environment:
+          - ASPNETCORE_ENVIRONMENT=Development
+          - ASPNETCORE_URLS=https://+:443;http://+:80
+          - ASPNETCORE_HTTPS_PORT=32774
+          - ASPNETCORE_Kestrel__Certificates__Default__Password=mypassword123
+          - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+        volumes:
+          - ./https/aspnetapp.pfx:/https/aspnetapp.pfx:ro
 
-  client:
-    build: ./my-app
-    image: my-app
-    container_name: front
-    ports:
-      - "81:80"
-    links:
-      - api
+    client:
+        build: 
+            context: ./my-app
+        image: my-app
+        container_name: front
+        links:
+          - api

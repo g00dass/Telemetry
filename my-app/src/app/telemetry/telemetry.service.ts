@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface StatInfo {
     id : AppId
@@ -21,9 +20,11 @@ export interface AppStatistics {
 
 @Injectable()
 export class TelemetryService {
-    telemetryUrl = 'https://statistics/api/';
+    telemetryUrl = environment.statisticsApiUrl;
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) { 
+        console.log(this.telemetryUrl)
+    }
 
     getStats() {
         return this.http.get(this.telemetryUrl + 'appInfo/all');

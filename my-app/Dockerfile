@@ -9,9 +9,10 @@ RUN npm install
 
 COPY ./ /app/
 
-ARG configuration=production
+ARG env
 
-RUN npm run build -- --output-path=./dist/out --configuration $configuration
+RUN echo "env $env"
+RUN npm run build:$env -- --output-path=./dist/out
 # Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
 FROM nginx:1.15
 
