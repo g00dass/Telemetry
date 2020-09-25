@@ -19,3 +19,5 @@ bld/
 
 # Debug artifacts
 **/launchSettings.json
+
+my-app/https/
