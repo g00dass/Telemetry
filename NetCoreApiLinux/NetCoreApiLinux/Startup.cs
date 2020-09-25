@@ -37,8 +37,6 @@ namespace NetCoreApiLinux
                 .AllowAnyHeader()
                 .AllowAnyMethod());
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
 
             app.UseAuthorization();

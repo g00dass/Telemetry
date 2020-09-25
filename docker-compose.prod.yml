@@ -1,8 +1,0 @@
-version: "3"
-services:
-    client:
-        build: 
-            args:
-                env: prod
-        ports:
-          - "82:80"  
