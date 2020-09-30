@@ -1,0 +1,40 @@
+<h3>Telemetry</h3>
+<div>
+  <button (click)="clear(); showStats()">get</button>
+  <button (click)="clear()">clear</button>
+
+  <table mat-table [dataSource]="stats" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="id.deviceId">
+        <th mat-header-cell *matHeaderCellDef> Id </th>
+        <td mat-cell *matCellDef="let element"> {{element.id.deviceId}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="statistics.userName">
+        <th mat-header-cell *matHeaderCellDef> UserName </th>
+        <td mat-cell *matCellDef="let element"> {{element.statistics.userName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lastUpdatedAt">
+        <th mat-header-cell *matHeaderCellDef> LastUpdatedAt </th>
+        <td mat-cell *matCellDef="let element"> {{element.lastUpdatedAt}} </td>
+      </ng-container>
+
+    <ng-container matColumnDef="statistics.appVersion">
+        <th mat-header-cell *matHeaderCellDef> Version </th>
+        <td mat-cell *matCellDef="let element"> {{element.statistics.appVersion}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="statistics.osName">
+        <th mat-header-cell *matHeaderCellDef> OsName </th>
+        <td mat-cell *matCellDef="let element"> {{element.statistics.osName}} </td>
+      </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+  </table>
+</div>
+
+
+  

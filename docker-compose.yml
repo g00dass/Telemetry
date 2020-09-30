@@ -1,0 +1,20 @@
+version: "3"
+services:
+    api:
+        build: ./NetCoreApiLinux
+        image: aspnetapp
+        environment:
+          - ASPNETCORE_ENVIRONMENT=Development
+          - ASPNETCORE_URLS=http://+:80
+
+    front:
+        build: 
+            context: ./my-app
+            args:
+                env: prod            
+        image: my-app
+        container_name: front
+        links:
+          - api
+        ports:
+          - "82:443"

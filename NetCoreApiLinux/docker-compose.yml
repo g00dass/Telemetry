@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  netcoreapilinux:
+    image: ${DOCKER_REGISTRY-}netcoreapilinux
+    build:
+      context: .
+      dockerfile: NetCoreApiLinux/Dockerfile
