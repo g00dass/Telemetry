@@ -1,22 +1,15 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine AS build
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
-WORKDIR /src
-COPY ["NetCoreApiLinux/NetCoreApiLinux.csproj", "NetCoreApiLinux/"]
+
+COPY NetCoreApiLinux/*.csproj ./NetCoreApiLinux/
 RUN dotnet restore "NetCoreApiLinux/NetCoreApiLinux.csproj"
-COPY . .
-WORKDIR "/src/NetCoreApiLinux"
-RUN dotnet build "NetCoreApiLinux.csproj" -c Release -o /app/build
 
-FROM build AS publish
-RUN dotnet publish "NetCoreApiLinux.csproj" -c Release -o /app/publish
+COPY NetCoreApiLinux/. ./NetCoreApiLinux/
+WORKDIR /app/NetCoreApiLinux
+RUN dotnet publish "NetCoreApiLinux.csproj" -c Release -o /out --no-restore
 
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine AS runtime
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /out ./
 ENTRYPOINT ["dotnet", "NetCoreApiLinux.dll"]
