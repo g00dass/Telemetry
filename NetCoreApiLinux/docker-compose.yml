@@ -6,3 +6,12 @@ services:
     build:
       context: .
       dockerfile: NetCoreApiLinux/Dockerfile
+  seq:
+    image: datalust/seq:latest
+    environment:
+      - ACCEPT_EULA=Y
+    volumes:
+      - ./logs:/data
+    ports:
+      - "83:80"
+      - "5341:5341"

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using Serilog.Debugging;
 using Serilog.Formatting.Compact;
 
 namespace NetCoreApiLinux
@@ -18,10 +19,16 @@ namespace NetCoreApiLinux
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(loggerConfiguration)
                 .Enrich.FromLogContext()
-                .WriteTo.Console(new RenderedCompactJsonFormatter())
-                .WriteTo.Debug(outputTemplate: DateTime.Now.ToString())
-                .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+                //.WriteTo.Console(new RenderedCompactJsonFormatter())
+                //.WriteTo.Debug(outputTemplate: DateTime.Now.ToString())
+                //.WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+                .WriteTo.Seq("http://localhost:5341")
                 .CreateLogger();
+
+            SelfLog.Enable(m => {
+                // Destination depends on how you wish to collect messages
+                Console.WriteLine(m);
+            });
 
             CreateHostBuilder(args).Build().Run();
         }
