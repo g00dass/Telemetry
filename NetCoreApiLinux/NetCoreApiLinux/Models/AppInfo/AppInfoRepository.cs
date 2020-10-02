@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Mapster;
 using NetCoreApiLinux.Models.AppInfo.Requests;
 
 namespace NetCoreApiLinux.Models.AppInfo
@@ -37,23 +38,15 @@ namespace NetCoreApiLinux.Models.AppInfo
 
         private static AppInfo CreateAppInfo(AppInfoRequest request)
         {
-            var appInfo = new AppInfo
-            {
-                Id = new AppId
-                {
-                    DeviceId = request.Id.DeviceId
-                },
-                Statistics = new AppStatistics()
-            };
+            var appInfo = request.Adapt<AppInfo>();
+            appInfo.LastUpdatedAt = DateTimeOffset.Now;
 
-            return UpdateAppInfo(appInfo, request);
+            return appInfo;
         }
 
         private static AppInfo UpdateAppInfo(AppInfo appInfo, AppInfoRequest request)
         {
-            appInfo.Statistics.AppVersion = request.Statistics.AppVersion;
-            appInfo.Statistics.UserName = request.Statistics.UserName;
-            appInfo.Statistics.OsName = request.Statistics.OsName;
+            appInfo.Statistics = request.Statistics.Adapt<AppStatistics>();
             appInfo.LastUpdatedAt = DateTimeOffset.Now;
 
             return appInfo;
