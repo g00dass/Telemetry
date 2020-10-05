@@ -19,6 +19,9 @@ namespace NetCoreApiLinux.Controllers
             this.appInfoRepository = appInfoRepository;
         }
 
+        /// <summary>
+        /// Create or update statistics
+        /// </summary>
         [HttpPost("appInfo")]
         public void AddOrUpdateAppInfo([FromBody] AppInfoRequest request)
         {
@@ -30,6 +33,10 @@ namespace NetCoreApiLinux.Controllers
             log.Information("Called {Method}, {@Request}", nameof(AddOrUpdateAppInfo), request);
         }
 
+        /// <summary>
+        /// Get statistics for all devices
+        /// </summary>
+        /// <returns>Statistics for all devices</returns>
         [HttpGet("appInfo/all")]
         public AppInfo[] GetAllAppInfos()
         {
