@@ -22,6 +22,7 @@ namespace NetCoreApiLinux.Controllers
         /// <summary>
         /// Create or update statistics
         /// </summary>
+        /// <response code="200">AppInfo created</response>
         [HttpPost("appInfo")]
         public void AddOrUpdateAppInfo([FromBody] AppInfoRequest request)
         {
@@ -36,8 +37,9 @@ namespace NetCoreApiLinux.Controllers
         /// <summary>
         /// Get statistics for all devices
         /// </summary>
-        /// <returns>Statistics for all devices</returns>
+        /// <response code="200">Array with AppInfos for all devices</response>
         [HttpGet("appInfo/all")]
+        [ProducesResponseType(typeof(AppInfo[]), 200)]
         public AppInfo[] GetAllAppInfos()
         {
             log.Information($"Called {nameof(GetAllAppInfos)}");
