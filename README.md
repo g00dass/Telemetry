@@ -2,4 +2,4 @@
 `docker-compose up --build`
 
 ### Run dev  
-`ng run my-app:serve:dev -o`
+`ng run telemetry-app:serve:dev -o`

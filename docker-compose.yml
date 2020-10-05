@@ -11,10 +11,10 @@ services:
 
     front:
         build: 
-            context: ./my-app
+            context: ./telemetry-app
             args:
                 env: prod            
-        image: my-app
+        image: telemetry-app
         container_name: front
         links:
           - api
