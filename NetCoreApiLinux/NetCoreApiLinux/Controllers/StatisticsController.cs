@@ -14,8 +14,8 @@ namespace NetCoreApiLinux.Controllers
     [Route("statistics/api")]
     public class StatisticsController : ControllerBase
     {
-        private readonly IRepository<AppInfoDbo, AppIdDbo> appInfoRepository;
         private static readonly ILogger log = Log.ForContext<StatisticsController>();
+        private readonly IRepository<AppInfoDbo, AppIdDbo> appInfoRepository;
 
         public StatisticsController(IRepository<AppInfoDbo, AppIdDbo> appInfoRepository)
         {
@@ -32,7 +32,7 @@ namespace NetCoreApiLinux.Controllers
             if (request.AppInfo.Id == null)
                 throw new ArgumentException("Id should not be null.");
 
-            appInfoRepository.AddOrUpdateAppInfo(request.AppInfo.Adapt<AppInfoDbo>());
+            appInfoRepository.AddOrUpdate(request.AppInfo.Adapt<AppInfoDbo>());
 
             log.Information("Called {Method}, {@Request}", nameof(AddOrUpdateAppInfo), request);
         }

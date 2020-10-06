@@ -7,7 +7,6 @@ namespace DataLayer
     public class AppInfoRepository : IRepository<AppInfoDbo, AppIdDbo>
     {
         private readonly IMongoDatabase db;
-        private IMongoCollection<AppInfoDbo> AppInfos => db.GetCollection<AppInfoDbo>("AppInfos");
 
         public AppInfoRepository(IMongoDbSettings mongoDbSettings)
         {
@@ -22,16 +21,16 @@ namespace DataLayer
                 .ToArray();
         }
 
-        public AppInfoDbo Find(AppIdDbo appId)
+        public AppInfoDbo Find(AppIdDbo id)
         {
-            var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.MongoId, appId.ToBsonId());
+            var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.MongoId, id.ToBsonId());
 
             return AppInfos
                 .Find(filterEq)
                 .SingleOrDefault();
         }
 
-        public void AddOrUpdateAppInfo(AppInfoDbo dbo)
+        public void AddOrUpdate(AppInfoDbo dbo)
         {
             var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.MongoId, dbo.Id.ToBsonId());
             dbo.LastUpdatedAt = DateTimeOffset.Now;
@@ -39,5 +38,7 @@ namespace DataLayer
             AppInfos
                 .FindOneAndReplace(filterEq, dbo, new FindOneAndReplaceOptions<AppInfoDbo> { IsUpsert = true });
         }
+
+        private IMongoCollection<AppInfoDbo> AppInfos => db.GetCollection<AppInfoDbo>("AppInfos");
     }
 }

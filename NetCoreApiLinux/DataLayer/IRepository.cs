@@ -5,7 +5,7 @@ namespace DataLayer
     public interface IRepository<T, TId> where TId : IMongoBsonId
     {
         T[] GetAll();
-        T Find(TId appId);
-        void AddOrUpdateAppInfo(T dbo);
+        T Find(TId id);
+        void AddOrUpdate(T dbo);
     }
 }
