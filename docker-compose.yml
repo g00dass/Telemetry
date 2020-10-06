@@ -1,7 +1,9 @@
 version: "3"
 services:
     api:
-        build: ./NetCoreApiLinux
+        build:
+            context: ./NetCoreApiLinux
+            dockerfile: ./NetCoreApiLinux/Dockerfile
         image: aspnetapp
         environment:
           - ASPNETCORE_ENVIRONMENT=Development
@@ -9,12 +11,23 @@ services:
 
     front:
         build: 
-            context: ./my-app
+            context: ./telemetry-app
             args:
                 env: prod            
-        image: my-app
+        image: telemetry-app
         container_name: front
         links:
           - api
         ports:
           - "82:443"
+          
+    seq:
+        image: datalust/seq:latest
+        environment:
+          - ACCEPT_EULA=Y
+        volumes:
+          - ./logs:/data
+        ports:
+          - "83:80"
+          - "5341:5341"
+          

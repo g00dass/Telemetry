@@ -27,5 +27,7 @@ COPY ./nginx.conf /etc/nginx/nginx.conf
 
 ## Copy nginx locations configuration
 COPY ./locations/prod/frontend.conf /etc/nginx/locations/frontend.conf
+COPY ./snippets/prod/api.conf /etc/nginx/snippets/api.conf
+
 COPY ./https/aspnetapp.crt /certs/aspnetapp.crt
 COPY ./https/aspnetapp.rsa /keys/aspnetapp.rsa
