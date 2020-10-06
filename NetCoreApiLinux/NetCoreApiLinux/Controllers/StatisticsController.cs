@@ -14,10 +14,10 @@ namespace NetCoreApiLinux.Controllers
     [Route("statistics/api")]
     public class StatisticsController : ControllerBase
     {
-        private readonly IAppInfoRepository appInfoRepository;
+        private readonly IRepository<AppInfoDbo, AppIdDbo> appInfoRepository;
         private static readonly ILogger log = Log.ForContext<StatisticsController>();
 
-        public StatisticsController(IAppInfoRepository appInfoRepository)
+        public StatisticsController(IRepository<AppInfoDbo, AppIdDbo> appInfoRepository)
         {
             this.appInfoRepository = appInfoRepository;
         }
