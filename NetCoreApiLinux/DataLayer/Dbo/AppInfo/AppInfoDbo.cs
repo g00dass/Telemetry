@@ -1,6 +1,6 @@
 using System;
 
-namespace NetCoreApiLinux.Models.AppInfo.Dbo
+namespace DataLayer.Dbo.AppInfo
 {
     public class AppInfoDbo
     {

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DataLayer.Dbo.AppInfo;
 using Mapster;
-using NetCoreApiLinux.Models.AppInfo.Dbo;
 
 namespace DataLayer
 {

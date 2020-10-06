@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
 using DataLayer;
+using DataLayer.Dbo.AppInfo;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreApiLinux.Models.AppInfo;
-using NetCoreApiLinux.Models.AppInfo.Dbo;
 using NetCoreApiLinux.Models.AppInfo.Requests;
 using Serilog;
 
