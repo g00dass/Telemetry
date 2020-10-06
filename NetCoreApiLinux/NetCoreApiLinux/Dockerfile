@@ -1,11 +1,14 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine AS build
 WORKDIR /app
 
-
+COPY *.sln .
+COPY docker-compose.dcproj .
 COPY NetCoreApiLinux/*.csproj ./NetCoreApiLinux/
-RUN dotnet restore "NetCoreApiLinux/NetCoreApiLinux.csproj"
+COPY DataLayer/*.csproj ./DataLayer/
+RUN dotnet restore NetCoreApiLinux.sln
 
 COPY NetCoreApiLinux/. ./NetCoreApiLinux/
+COPY DataLayer/. ./DataLayer/
 WORKDIR /app/NetCoreApiLinux
 RUN dotnet publish "NetCoreApiLinux.csproj" -c Release -o /out --no-restore
 

@@ -1,5 +1,8 @@
 using System;
 using System.Linq;
+using DataLayer;
+using DataLayer.Dbo.AppInfo;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreApiLinux.Models.AppInfo;
 using NetCoreApiLinux.Models.AppInfo.Requests;
@@ -12,7 +15,7 @@ namespace NetCoreApiLinux.Controllers
     public class StatisticsController : ControllerBase
     {
         private readonly IAppInfoRepository appInfoRepository;
-        private static readonly ILogger log =  Log.ForContext<StatisticsController>();
+        private static readonly ILogger log = Log.ForContext<StatisticsController>();
 
         public StatisticsController(IAppInfoRepository appInfoRepository)
         {
@@ -26,10 +29,10 @@ namespace NetCoreApiLinux.Controllers
         [HttpPost("appInfo")]
         public void AddOrUpdateAppInfo([FromBody] AppInfoRequest request)
         {
-            if (request.Id == null)
+            if (request.AppInfo.Id == null)
                 throw new ArgumentException("Id should not be null.");
 
-            appInfoRepository.AddOrUpdateAppInfo(request);
+            appInfoRepository.AddOrUpdateAppInfo(request.AppInfo.Adapt<AppInfoDbo>());
 
             log.Information("Called {Method}, {@Request}", nameof(AddOrUpdateAppInfo), request);
         }
@@ -43,7 +46,7 @@ namespace NetCoreApiLinux.Controllers
         public AppInfo[] GetAllAppInfos()
         {
             log.Information($"Called {nameof(GetAllAppInfos)}");
-            return appInfoRepository.GetAll().ToArray();
+            return appInfoRepository.GetAll().Select(x => x.Adapt<AppInfo>()).ToArray();
         }
     }
 }
