@@ -4,13 +4,13 @@ using MongoDB.Driver;
 
 namespace DataLayer
 {
-    public class AppInfoRepository : IRepository<AppInfoDbo, AppIdDbo>
+    public class AppInfoRepository : IRepository<AppInfoDbo>
     {
         private readonly IMongoDatabase db;
 
-        public AppInfoRepository(IMongoDbSettings mongoDbSettings)
+        public AppInfoRepository(IMongoDbProvider dbProvider)
         {
-            db = new MongoClient(mongoDbSettings.ConnectionString).GetDatabase(mongoDbSettings.DatabaseName);
+            this.db = dbProvider.Db;
         }
 
         public AppInfoDbo[] GetAll()
@@ -21,9 +21,9 @@ namespace DataLayer
                 .ToArray();
         }
 
-        public AppInfoDbo Find(AppIdDbo id)
+        public AppInfoDbo Find(string id)
         {
-            var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.MongoId, id.ToBsonId());
+            var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, id);
 
             return AppInfos
                 .Find(filterEq)
@@ -32,7 +32,7 @@ namespace DataLayer
 
         public void AddOrUpdate(AppInfoDbo dbo)
         {
-            var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.MongoId, dbo.Id.ToBsonId());
+            var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, dbo.Id);
             dbo.LastUpdatedAt = DateTimeOffset.Now;
 
             AppInfos

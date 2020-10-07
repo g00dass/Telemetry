@@ -15,9 +15,9 @@ namespace NetCoreApiLinux.Controllers
     public class StatisticsController : ControllerBase
     {
         private static readonly ILogger log = Log.ForContext<StatisticsController>();
-        private readonly IRepository<AppInfoDbo, AppIdDbo> appInfoRepository;
+        private readonly IRepository<AppInfoDbo> appInfoRepository;
 
-        public StatisticsController(IRepository<AppInfoDbo, AppIdDbo> appInfoRepository)
+        public StatisticsController(IRepository<AppInfoDbo> appInfoRepository)
         {
             this.appInfoRepository = appInfoRepository;
         }

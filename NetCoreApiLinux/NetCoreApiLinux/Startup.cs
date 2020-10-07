@@ -39,6 +39,10 @@ namespace NetCoreApiLinux
             services.AddSingleton<IRepository<AppInfoDbo, AppIdDbo>, AppInfoRepository>();
 
             services.Configure<MongoDbSettings>(Configuration.GetSection(nameof(MongoDbSettings)));
+            services.AddSingleton<IRepository<AppInfoDbo>, AppInfoRepository>();
+            services.AddSingleton<IMongoDbProvider, MongoDbProvider>();
+
+            services.Configure<MongoDbSettings>(Configuration.GetSection("MongoDbSettings"));
             services.AddSingleton<IMongoDbSettings>(x => x.GetRequiredService<IOptions<MongoDbSettings>>().Value);
         }
 

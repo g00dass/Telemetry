@@ -1,11 +1,9 @@
-using DataLayer.Dbo.AppInfo;
-
 namespace DataLayer
 {
-    public interface IRepository<T, TId> where TId : IMongoBsonId
+    public interface IRepository<T>
     {
         T[] GetAll();
-        T Find(TId id);
+        T Find(string id);
         void AddOrUpdate(T dbo);
     }
 }

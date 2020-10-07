@@ -6,9 +6,8 @@ namespace DataLayer.Dbo.AppInfo
     public class AppInfoDbo
     {
         [BsonId]
-        public string MongoId => Id.ToBsonId();
+        public string Id { get; set; }
 
-        public AppIdDbo Id { get; set; }
         public AppStatisticsDbo Statistics { get; set; }
         public DateTimeOffset LastUpdatedAt { get; set; }
     }
