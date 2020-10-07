@@ -6,14 +6,14 @@ services:
             dockerfile: ./NetCoreApiLinux/Dockerfile
         image: aspnetapp
         environment:
-          - ASPNETCORE_ENVIRONMENT=Development
           - ASPNETCORE_URLS=http://+:80
-
+          - MongoDbSettings__Host=mongo
+          - MongoDbSettings__Port=27017
     front:
         build: 
             context: ./telemetry-app
             args:
-                env: prod            
+                env: prod
         image: telemetry-app
         container_name: front
         links:
@@ -28,6 +28,13 @@ services:
         volumes:
           - ./logs:/data
         ports:
-          - "83:80"
-          - "5341:5341"
-          
+          - "84:80"
+          - "5342:5341"
+    mongo:
+        image: mongo
+        restart: always
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
+        ports:
+          - 27018:27017

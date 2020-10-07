@@ -1,54 +1,44 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using DataLayer.Dbo.AppInfo;
-using Mapster;
+using MongoDB.Driver;
 
 namespace DataLayer
 {
-    public interface IAppInfoRepository
+    public class AppInfoRepository : IRepository<AppInfoDbo>
     {
-        AppInfoDbo[] GetAll();
-        AppInfoDbo Find(AppIdDbo appId);
-        void AddOrUpdateAppInfo(AppInfoDbo dbo);
-    }
+        private readonly IMongoDatabase db;
 
-    public class AppInfoRepository : IAppInfoRepository
-    {
-        private static readonly IList<AppInfoDbo> appInfos = new List<AppInfoDbo>();
+        public AppInfoRepository(IMongoDbProvider dbProvider)
+        {
+            this.db = dbProvider.Db;
+        }
 
         public AppInfoDbo[] GetAll()
         {
-            return appInfos.ToArray();
+            return AppInfos
+                .Find(_ => true)
+                .ToList()
+                .ToArray();
         }
 
-        public AppInfoDbo Find(AppIdDbo appId)
+        public AppInfoDbo Find(string id)
         {
-            return appInfos.SingleOrDefault(x => x.Id.DeviceId == appId.DeviceId);
+            var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, id);
+
+            return AppInfos
+                .Find(filterEq)
+                .SingleOrDefault();
         }
 
-        public void AddOrUpdateAppInfo(AppInfoDbo dbo)
+        public void AddOrUpdate(AppInfoDbo dbo)
         {
-            var oldDbo = Find(dbo.Id);
-            if(oldDbo == null)
-                appInfos.Add(CreateAppInfo(dbo));
-            else
-                UpdateAppInfo(oldDbo, dbo);
-        }
-
-        private static AppInfoDbo CreateAppInfo(AppInfoDbo dbo)
-        {
+            var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, dbo.Id);
             dbo.LastUpdatedAt = DateTimeOffset.Now;
 
-            return dbo;
+            AppInfos
+                .FindOneAndReplace(filterEq, dbo, new FindOneAndReplaceOptions<AppInfoDbo> { IsUpsert = true });
         }
 
-        private static AppInfoDbo UpdateAppInfo(AppInfoDbo oldDbo, AppInfoDbo newDbo)
-        {
-            oldDbo.Statistics = newDbo.Statistics.Adapt<AppStatisticsDbo>();
-            oldDbo.LastUpdatedAt = DateTimeOffset.Now;
-
-            return oldDbo;
-        }
+        private IMongoCollection<AppInfoDbo> AppInfos => db.GetCollection<AppInfoDbo>("AppInfos");
     }
 }
