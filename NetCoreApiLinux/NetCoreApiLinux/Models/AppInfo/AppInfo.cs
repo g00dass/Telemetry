@@ -4,8 +4,12 @@ namespace NetCoreApiLinux.Models.AppInfo
 {
     public class AppInfo
     {
-        public AppId Id { get; set; }
-        public AppStatistics Statistics { get; set; }
+        public Guid Id { get; set; }
+
+        public string AppVersion { get; set; }
+        public string UserName { get; set; }
+        public string OsName { get; set; }
+
         public DateTimeOffset LastUpdatedAt { get; set; }
     }
 }

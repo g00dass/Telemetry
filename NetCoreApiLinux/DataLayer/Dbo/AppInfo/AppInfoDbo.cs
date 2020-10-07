@@ -8,7 +8,10 @@ namespace DataLayer.Dbo.AppInfo
         [BsonId]
         public string Id { get; set; }
 
-        public AppStatisticsDbo Statistics { get; set; }
+        public string AppVersion { get; set; }
+        public string UserName { get; set; }
+        public string OsName { get; set; }
+
         public DateTimeOffset LastUpdatedAt { get; set; }
     }
 }
