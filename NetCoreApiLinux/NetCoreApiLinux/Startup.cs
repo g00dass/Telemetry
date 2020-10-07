@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using DataLayer.Dbo.AppInfo;
+using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using NetCoreApiLinux.Models.AppInfo;
 
 namespace NetCoreApiLinux
 {
@@ -36,9 +38,14 @@ namespace NetCoreApiLinux
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddSingleton<IRepository<AppInfoDbo, AppIdDbo>, AppInfoRepository>();
+            TypeAdapterConfig<string, AppId>
+                .NewConfig()
+                .MapWith(x => new AppId {DeviceId = Guid.Parse(x)});
 
-            services.Configure<MongoDbSettings>(Configuration.GetSection(nameof(MongoDbSettings)));
+            TypeAdapterConfig<AppId, string>
+                .NewConfig()
+                .MapWith(x => x.DeviceId.ToString());
+
             services.AddSingleton<IRepository<AppInfoDbo>, AppInfoRepository>();
             services.AddSingleton<IMongoDbProvider, MongoDbProvider>();
 
