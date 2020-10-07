@@ -4,7 +4,14 @@ using MongoDB.Driver;
 
 namespace DataLayer
 {
-    public class AppInfoRepository : IRepository<AppInfoDbo>
+    public interface IAppInfoRepository
+    {
+        public AppInfoDbo[] GetAll();
+        public AppInfoDbo Find(string id);
+        public void AddOrUpdate(AppInfoDbo dbo);
+    }
+
+    public class AppInfoRepository : IAppInfoRepository
     {
         private readonly IMongoDatabase db;
 
@@ -33,7 +40,6 @@ namespace DataLayer
         public void AddOrUpdate(AppInfoDbo dbo)
         {
             var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, dbo.Id);
-            dbo.LastUpdatedAt = DateTimeOffset.Now;
 
             AppInfos
                 .FindOneAndReplace(filterEq, dbo, new FindOneAndReplaceOptions<AppInfoDbo> { IsUpsert = true });

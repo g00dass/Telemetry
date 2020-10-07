@@ -38,15 +38,8 @@ namespace NetCoreApiLinux
                 c.IncludeXmlComments(xmlPath);
             });
 
-            TypeAdapterConfig<string, AppId>
-                .NewConfig()
-                .MapWith(x => new AppId {DeviceId = Guid.Parse(x)});
-
-            TypeAdapterConfig<AppId, string>
-                .NewConfig()
-                .MapWith(x => x.DeviceId.ToString());
-
-            services.AddSingleton<IRepository<AppInfoDbo>, AppInfoRepository>();
+            services.AddSingleton<IAppInfoRepository, AppInfoRepository>();
+            services.AddSingleton<IStatisticsEventsHistoryRepository, StatisticsEventsHistoryRepository>();
             services.AddSingleton<IMongoDbProvider, MongoDbProvider>();
 
             services.Configure<MongoDbSettings>(Configuration.GetSection("MongoDbSettings"));
