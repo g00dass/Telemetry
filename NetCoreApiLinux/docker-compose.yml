@@ -1,17 +1,37 @@
 version: '3.4'
 
 services:
-  netcoreapilinux:
-    image: ${DOCKER_REGISTRY-}netcoreapilinux
-    build:
-      context: .
-      dockerfile: NetCoreApiLinux/Dockerfile
-  seq:
-    image: datalust/seq:latest
-    environment:
-      - ACCEPT_EULA=Y
-    volumes:
-      - ./logs:/data
-    ports:
-      - "83:80"
-      - "5341:5341"
+    netcoreapilinux:
+        image: ${DOCKER_REGISTRY-}netcoreapilinux
+        build:
+            context: .
+            dockerfile: NetCoreApiLinux/Dockerfile
+        environment:
+          MongoDbSettings__Host: mongo
+    seq:
+        image: datalust/seq:latest
+        environment:
+          - ACCEPT_EULA=Y
+        volumes:
+          - ./logs:/data
+        ports:
+          - "83:80"
+          - "5341:5341"
+    mongo:
+        image: mongo
+        restart: always
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
+        ports:
+          - 27017:27017
+    mongo-express:
+        image: mongo-express
+        restart: always
+        ports:
+          - 8081:8081
+        environment:
+          ME_CONFIG_MONGODB_ADMINUSERNAME: root
+          ME_CONFIG_MONGODB_ADMINPASSWORD: example
+        depends_on:
+          - mongo

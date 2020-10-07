@@ -1,10 +1,13 @@
 using System;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace DataLayer.Dbo.AppInfo
 {
     public class AppInfoDbo
     {
-        public AppIdDbo Id { get; set; }
+        [BsonId]
+        public string Id { get; set; }
+
         public AppStatisticsDbo Statistics { get; set; }
         public DateTimeOffset LastUpdatedAt { get; set; }
     }

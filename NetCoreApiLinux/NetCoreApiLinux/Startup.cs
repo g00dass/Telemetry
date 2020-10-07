@@ -2,12 +2,16 @@ using DataLayer;
 using System;
 using System.IO;
 using System.Reflection;
+using DataLayer.Dbo.AppInfo;
+using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using NetCoreApiLinux.Models.AppInfo;
 
 namespace NetCoreApiLinux
 {
@@ -34,7 +38,19 @@ namespace NetCoreApiLinux
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddSingleton<IAppInfoRepository, AppInfoRepository>();
+            TypeAdapterConfig<string, AppId>
+                .NewConfig()
+                .MapWith(x => new AppId {DeviceId = Guid.Parse(x)});
+
+            TypeAdapterConfig<AppId, string>
+                .NewConfig()
+                .MapWith(x => x.DeviceId.ToString());
+
+            services.AddSingleton<IRepository<AppInfoDbo>, AppInfoRepository>();
+            services.AddSingleton<IMongoDbProvider, MongoDbProvider>();
+
+            services.Configure<MongoDbSettings>(Configuration.GetSection("MongoDbSettings"));
+            services.AddSingleton<IMongoDbSettings>(x => x.GetRequiredService<IOptions<MongoDbSettings>>().Value);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
