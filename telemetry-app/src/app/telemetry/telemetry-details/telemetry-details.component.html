@@ -1,0 +1,29 @@
+<div>
+  <label>{{this.appInfo?.userName}}</label><br/>
+  <label>Идентификатор: {{this.appInfo?.id}}</label><br/>
+  <label>Версия ПО ViPNet Client: {{this.appInfo?.appVersion}}</label><br/>
+  <label>{{this.appInfo?.osName}}</label><br/>
+
+  <h4>События ViPNet Client</h4>
+  <table mat-table [dataSource]="events" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> name </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef> date </th>
+        <td mat-cell *matCellDef="let element"> {{element.date | date:'dd/M/yyyy hh:mm:ss'}} </td>
+      </ng-container>
+
+    <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef> description </th>
+        <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+      </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+  </table>
+</div>

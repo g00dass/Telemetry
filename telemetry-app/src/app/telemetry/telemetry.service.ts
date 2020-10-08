@@ -2,20 +2,18 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
-export interface StatInfo {
-    id : AppId
-    statistics : AppStatistics
-    lastUpdatedAt : Date
-}
-
-export interface AppId {
-    deviceId : string
-}
-
-export interface AppStatistics {
+export interface AppInfo {
+    id : string
     appVersion : string
     userName : string
     osName : string
+    lastUpdatedAt : Date
+}
+
+export interface StatisticsEvent {
+    date : Date
+    name : string
+    description : string
 }
 
 @Injectable()
@@ -26,7 +24,15 @@ export class TelemetryService {
         console.log(this.telemetryUrl)
     }
 
-    getStats() {
+    getAllAppInfos() {
         return this.http.get(this.telemetryUrl + 'appInfo/all');
-  }
+    }
+
+    getAppInfo(id: string) {
+        return this.http.get(this.telemetryUrl + 'appInfo/' + id);
+    }
+
+    getEvents(id: string) {
+        return this.http.get(this.telemetryUrl + 'appInfo/' + id + '/events-history');
+    }
 }

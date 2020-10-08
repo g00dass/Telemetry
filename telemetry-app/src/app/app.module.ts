@@ -4,20 +4,26 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TelemetryComponent } from './telemetry/telemetry.component';
+import { TelemetryDetailsComponent } from './telemetry/telemetry-details/telemetry-details.component';
 import { HttpClientModule } from '@angular/common/http';
- import { MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FlexLayoutModule } from '@angular/flex-layout';
 // import {CdkTableModule} from '@angular/cdk/table';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TelemetryComponent
+    TelemetryComponent,
+    TelemetryDetailsComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
     MatTableModule,
+    MatCheckboxModule,
+    FlexLayoutModule
     // CdkTableModule
   ],
   providers: [],

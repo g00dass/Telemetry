@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {StatInfo, TelemetryService} from './telemetry.service'
+import {AppInfo, TelemetryService,} from './telemetry.service'
+import {SelectionModel} from '@angular/cdk/collections';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-telemetry',
@@ -9,18 +11,24 @@ import {StatInfo, TelemetryService} from './telemetry.service'
 })
 export class TelemetryComponent implements OnInit {
 
-  stats : StatInfo[]
-  displayedColumns: string[] = ['statistics.userName', 'lastUpdatedAt', 'statistics.appVersion', 'statistics.osName'];
-  constructor(private telemetryService: TelemetryService) { }
+  id: string
+  stats : AppInfo[]
+  displayedColumns: string[] = ['userName', 'lastUpdatedAt', 'appVersion', 'osName'];
+
+  selection = new SelectionModel<AppInfo>(true, []);
+
+  constructor(private telemetryService: TelemetryService) {
+
+   }
 
   ngOnInit(): void {
     this.showStats();
   }
 
   showStats() {
-    this.telemetryService.getStats()
-      .subscribe((data: StatInfo[]) => {
-        console.log(data);
+    this.telemetryService.getAllAppInfos()
+      .subscribe((data: AppInfo[]) => {
+        //console.log(data);
         this.stats = data
       });
   }
@@ -28,5 +36,10 @@ export class TelemetryComponent implements OnInit {
   clear() {
     this.stats = undefined;
   }
+
+    setId(row?: AppInfo) {
+      this.id = row.id
+      console.log(this.id)
+    }
 
 }
