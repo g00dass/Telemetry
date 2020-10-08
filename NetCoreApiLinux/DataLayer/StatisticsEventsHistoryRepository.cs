@@ -1,52 +1,53 @@
-using System;
-using System.Linq;
+using System.Threading.Tasks;
 using DataLayer.Dbo.AppInfo;
 using MongoDB.Driver;
+using MoreLinq;
 
 namespace DataLayer
 {
-    public interface IStatisticsEventsHistoryRepository
+    public interface IStatisticsEventRepository
     {
-        StatisticsEventsHistoryDbo[] GetAll();
-        StatisticsEventsHistoryDbo Find(string id);
-        DateTimeOffset? AddOrUpdate(StatisticsEventsHistoryDbo dbo);
+        Task<StatisticsEventDbo[]> GetAllAsync();
+        Task<StatisticsEventDbo[]> FindByDeviceIdAsync(string deviceId);
+        Task AddAsync(StatisticsEventDbo[] dbos, string deviceId);
     }
 
-    public class StatisticsEventsHistoryRepository : IStatisticsEventsHistoryRepository
+    public class StatisticsEventRepository : IStatisticsEventRepository
     {
         private readonly IMongoDatabase db;
 
-        public StatisticsEventsHistoryRepository(IMongoDbProvider dbProvider)
+        public StatisticsEventRepository(IMongoDbProvider dbProvider)
         {
             this.db = dbProvider.Db;
         }
 
-        public StatisticsEventsHistoryDbo[] GetAll()
+        public async Task<StatisticsEventDbo[]> GetAllAsync()
         {
-            return Events
-                .Find(_ => true)
+            return (await Events
+                    .FindAsync(_ => true)
+                    .ConfigureAwait(false))
                 .ToList()
                 .ToArray();
         }
 
-        public StatisticsEventsHistoryDbo Find(string id)
+        public async Task<StatisticsEventDbo[]> FindByDeviceIdAsync(string deviceId)
         {
-            var filterEq = Builders<StatisticsEventsHistoryDbo>.Filter.Eq(x => x.Id, id);
+            var filterEq = Builders<StatisticsEventDbo>.Filter.Eq(x => x.DeviceId, deviceId);
 
-            return Events
-                .Find(filterEq)
-                .SingleOrDefault();
+            return (await Events
+                    .FindAsync(filterEq)
+                    .ConfigureAwait(false))
+                .ToList()
+                .ToArray();
         }
 
-        public DateTimeOffset? AddOrUpdate(StatisticsEventsHistoryDbo dbo)
+        public Task AddAsync(StatisticsEventDbo[] dbos, string deviceId)
         {
-            var filterEq = Builders<StatisticsEventsHistoryDbo>.Filter.Eq(x => x.Id, dbo.Id);
-            var update = Builders<StatisticsEventsHistoryDbo>.Update.PushEach(x => x.Events, dbo.Events);
+            dbos.ForEach(x => x.DeviceId = deviceId);
 
-            var newHistory = Events.FindOneAndUpdate(filterEq, update ,new FindOneAndUpdateOptions<StatisticsEventsHistoryDbo> { IsUpsert = true, ReturnDocument = ReturnDocument.After});
-            return newHistory.Events.OrderByDescending(x => x.Date).FirstOrDefault()?.Date;
+            return Events.InsertManyAsync(dbos);
         }
 
-        private IMongoCollection<StatisticsEventsHistoryDbo> Events => db.GetCollection<StatisticsEventsHistoryDbo>("StatisticsEventsHistories");
+        private IMongoCollection<StatisticsEventDbo> Events => db.GetCollection<StatisticsEventDbo>("StatisticsEvents");
     }
 }

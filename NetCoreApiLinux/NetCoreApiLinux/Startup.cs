@@ -2,8 +2,6 @@ using DataLayer;
 using System;
 using System.IO;
 using System.Reflection;
-using DataLayer.Dbo.AppInfo;
-using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using NetCoreApiLinux.Models.AppInfo;
 
 namespace NetCoreApiLinux
 {
@@ -39,7 +36,7 @@ namespace NetCoreApiLinux
             });
 
             services.AddSingleton<IAppInfoRepository, AppInfoRepository>();
-            services.AddSingleton<IStatisticsEventsHistoryRepository, StatisticsEventsHistoryRepository>();
+            services.AddSingleton<IStatisticsEventRepository, StatisticsEventRepository>();
             services.AddSingleton<IMongoDbProvider, MongoDbProvider>();
 
             services.Configure<MongoDbSettings>(Configuration.GetSection("MongoDbSettings"));

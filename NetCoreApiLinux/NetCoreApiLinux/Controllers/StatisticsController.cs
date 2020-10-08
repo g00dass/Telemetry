@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using DataLayer;
 using DataLayer.Dbo.AppInfo;
 using Mapster;
@@ -16,9 +17,9 @@ namespace NetCoreApiLinux.Controllers
     {
         private static readonly ILogger log = Log.ForContext<StatisticsController>();
         private readonly IAppInfoRepository appInfoRepository;
-        private readonly IStatisticsEventsHistoryRepository eventsRepository;
+        private readonly IStatisticsEventRepository eventsRepository;
 
-        public StatisticsController(IAppInfoRepository appInfoRepository, IStatisticsEventsHistoryRepository eventsRepository)
+        public StatisticsController(IAppInfoRepository appInfoRepository, IStatisticsEventRepository eventsRepository)
         {
             this.appInfoRepository = appInfoRepository;
             this.eventsRepository = eventsRepository;
@@ -29,7 +30,7 @@ namespace NetCoreApiLinux.Controllers
         /// </summary>
         /// <response code="200">AppInfo created</response>
         [HttpPost("appInfo")]
-        public void AddOrUpdateAppInfo([FromBody] AppInfoRequest request)
+        public async Task AddOrUpdateAppInfoAsync([FromBody] AppInfoRequest request)
         {
             if (request.AppInfo.Id == null)
                 throw new ArgumentException("Id should not be null.");
@@ -37,15 +38,13 @@ namespace NetCoreApiLinux.Controllers
             if (request.Events.Any(x => x.Description.Length > 50))
                 throw new ArgumentException("Description length should be <= 50.");
 
-            var events = request.Adapt<StatisticsEventsHistoryDbo>();
-            events.Id = request.AppInfo.Id.ToString();
-            var latestDate = eventsRepository.AddOrUpdate(events);
+            var events = request.Events.Select(x => x.Adapt<StatisticsEventDbo>());
+            await eventsRepository.AddAsync(events.ToArray(), request.AppInfo.Id.ToString()).ConfigureAwait(false);
 
             var newAppInfo = request.AppInfo.Adapt<AppInfoDbo>();
-            newAppInfo.LastUpdatedAt = latestDate ?? DateTimeOffset.Now;
-            appInfoRepository.AddOrUpdate(newAppInfo);
+            await appInfoRepository.AddOrUpdateAsync(newAppInfo).ConfigureAwait(false);
 
-            log.Information("Called {Method}, {@Request}", nameof(AddOrUpdateAppInfo), request);
+            log.Information("Called {Method}, {@Request}", nameof(AddOrUpdateAppInfoAsync), request);
         }
 
         /// <summary>
@@ -54,10 +53,14 @@ namespace NetCoreApiLinux.Controllers
         /// <response code="200">Array with AppInfos for all devices</response>
         [HttpGet("appInfo/all")]
         [ProducesResponseType(typeof(AppInfo[]), 200)]
-        public AppInfo[] GetAllAppInfos()
+        public async Task<AppInfo[]> GetAllAppInfosAsync()
         {
-            log.Information($"Called {nameof(GetAllAppInfos)}");
-            return appInfoRepository.GetAll().Select(x => x.Adapt<AppInfo>()).ToArray();
+            log.Information($"Called {nameof(GetAllAppInfosAsync)}");
+            return (await appInfoRepository
+                    .GetAllAsync()
+                    .ConfigureAwait(false))
+                .Select(x => x.Adapt<AppInfo>())
+                .ToArray();
         }
 
         /// <summary>
@@ -66,10 +69,13 @@ namespace NetCoreApiLinux.Controllers
         /// <response code="200">AppInfo for device with provided id</response>
         [HttpGet("appInfo/{id}")]
         [ProducesResponseType(typeof(AppInfo), 200)]
-        public AppInfo GetAppInfoById(Guid id)
+        public async Task<AppInfo> GetAppInfoByIdAsync(Guid id)
         {
-            log.Information($"Called {nameof(GetAppInfoById)}");
-            return appInfoRepository.Find(id.ToString()).Adapt<AppInfo>();
+            log.Information($"Called {nameof(GetAppInfoByIdAsync)}");
+            return (await appInfoRepository
+                    .FindAsync(id.ToString())
+                    .ConfigureAwait(false))
+                .Adapt<AppInfo>();
         }
 
         /// <summary>
@@ -78,10 +84,14 @@ namespace NetCoreApiLinux.Controllers
         /// <response code="200">Array with StatisticsEvent for device with provided id</response>
         [HttpGet("appInfo/{id}/events-history")]
         [ProducesResponseType(typeof(StatisticsEvent[]), 200)]
-        public StatisticsEvent[] GetStatisticsEventsHistoryByAppInfoId(Guid id)
+        public async Task<StatisticsEvent[]> GetStatisticsEventsHistoryByAppInfoIdAsync(Guid id)
         {
-            log.Information($"Called {nameof(GetStatisticsEventsHistoryByAppInfoId)}");
-            return eventsRepository.Find(id.ToString()).Events.Select(x => x.Adapt<StatisticsEvent>()).ToArray();
+            log.Information($"Called {nameof(GetStatisticsEventsHistoryByAppInfoIdAsync)}");
+            return (await eventsRepository
+                    .FindByDeviceIdAsync(id.ToString())
+                    .ConfigureAwait(false))
+                .Select(x => x.Adapt<StatisticsEvent>())
+                .ToArray();
         }
     }
 }
