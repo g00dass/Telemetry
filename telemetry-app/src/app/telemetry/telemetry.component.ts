@@ -13,7 +13,7 @@ export class TelemetryComponent implements OnInit {
 
   id: string
   stats : AppInfo[]
-  displayedColumns: string[] = ['userName', 'lastUpdatedAt', 'appVersion', 'osName'];
+  displayedColumns: string[] = ['userName', 'lastUpdatedAt'];
 
   selection = new SelectionModel<AppInfo>(true, []);
 
