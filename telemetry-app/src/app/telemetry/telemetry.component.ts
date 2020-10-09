@@ -12,8 +12,7 @@ import { switchMap } from 'rxjs/operators';
 })
 
 export class TelemetryComponent implements OnInit {
-  stats$: Observable<any>;
-  stats : AppInfo[]
+  stats$: Observable<AppInfo[]>;
   displayedColumns: string[] = ['userName', 'lastUpdatedAt'];
 
   constructor(

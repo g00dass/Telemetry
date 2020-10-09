@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { Observable } from 'rxjs';
 
 export interface AppInfo {
     id : string
@@ -24,15 +25,15 @@ export class TelemetryService {
         console.log(this.telemetryUrl)
     }
 
-    getAllAppInfos() {
-        return this.http.get(this.telemetryUrl + 'appInfo/all');
+    getAllAppInfos() : Observable<AppInfo[]>{
+        return this.http.get<AppInfo[]>(this.telemetryUrl + 'appInfo/all');
     }
 
-    getAppInfo(id: string) {
-        return this.http.get(this.telemetryUrl + 'appInfo/' + id);
+    getAppInfo(id: string) : Observable<AppInfo> {
+        return this.http.get<AppInfo>(this.telemetryUrl + 'appInfo/' + id);
     }
 
-    getEvents(id: string) {
-        return this.http.get(this.telemetryUrl + 'appInfo/' + id + '/events-history');
+    getEvents(id: string) : Observable<StatisticsEvent[]> {
+        return this.http.get<StatisticsEvent[]>(this.telemetryUrl + 'appInfo/' + id + '/events-history');
     }
 }

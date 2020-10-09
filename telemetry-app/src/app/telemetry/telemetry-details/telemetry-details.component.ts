@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {TelemetryService} from '../telemetry.service'
+import {AppInfo, StatisticsEvent, TelemetryService} from '../telemetry.service'
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -13,8 +13,8 @@ import { switchMap } from 'rxjs/operators';
 
 export class TelemetryDetailsComponent implements OnInit {
   id : string
-  appInfo$ : Observable<any>;
-  events$ : Observable<any>
+  appInfo$ : Observable<AppInfo>;
+  events$ : Observable<StatisticsEvent[]>
   displayedColumns: string[] = ['name', 'date', 'description'];
 
   constructor(
