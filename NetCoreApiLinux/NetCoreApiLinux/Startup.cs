@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Mongo.Migration.Documents;
+using Mongo.Migration.Startup;
+using Mongo.Migration.Startup.DotNetCore;
 
 namespace NetCoreApiLinux
 {
@@ -38,9 +40,20 @@ namespace NetCoreApiLinux
             services.AddSingleton<IAppInfoRepository, AppInfoRepository>();
             services.AddSingleton<IStatisticsEventRepository, StatisticsEventRepository>();
             services.AddSingleton<IMongoDbProvider, MongoDbProvider>();
+            services.AddSingleton<IMongoClientProvider, MongoClientProvider>();
+            services.AddSingleton(x => x.GetRequiredService<IMongoClientProvider>().Client);
 
-            services.Configure<MongoDbSettings>(Configuration.GetSection("MongoDbSettings"));
-            services.AddSingleton<IMongoDbSettings>(x => x.GetRequiredService<IOptions<MongoDbSettings>>().Value);
+            var mongoSettings = new MongoDbSettings();
+            Configuration.GetSection("MongoDbSettings").Bind(mongoSettings);
+            services.AddSingleton<IMongoDbSettings>(mongoSettings);
+
+            var settings = new MongoMigrationSettings
+            {
+                ConnectionString = mongoSettings.ConnectionString,
+                Database = mongoSettings.DatabaseName,
+                DatabaseMigrationVersion = new DocumentVersion(1, 0, 0) // Optional
+            };
+            services.AddMigration(settings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
