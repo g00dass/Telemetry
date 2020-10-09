@@ -2,7 +2,7 @@
 <div>
     <div
       fxLayout="row wrap" fxLayoutAlign="flex-start">
-    <table mat-table [dataSource]="stats" class="mat-elevation-z8" fxFlex="30%">
+    <table mat-table [dataSource]="stats$" class="mat-elevation-z8" fxFlex="30%">
 
         <ng-container matColumnDef="userName">
           <th mat-header-cell *matHeaderCellDef> Имя узла </th>
@@ -18,6 +18,7 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click) = "setId(row)"></tr>
 
     </table>
-    <app-telemetry-details fxFlex="70%" [id]="this.id"></app-telemetry-details>
+    <div fxFlex="70%">
+      <router-outlet ></router-outlet>
+    </div>
   </div>
-</div>

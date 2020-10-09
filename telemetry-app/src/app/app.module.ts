@@ -9,7 +9,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FlexLayoutModule } from '@angular/flex-layout';
-// import {CdkTableModule} from '@angular/cdk/table';
 
 @NgModule({
   declarations: [
@@ -24,7 +23,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatTableModule,
     MatCheckboxModule,
     FlexLayoutModule
-    // CdkTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

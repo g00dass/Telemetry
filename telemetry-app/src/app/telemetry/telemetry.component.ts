@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {AppInfo, TelemetryService,} from './telemetry.service'
-import {SelectionModel} from '@angular/cdk/collections';
-import { from } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-telemetry',
@@ -9,37 +10,27 @@ import { from } from 'rxjs';
   providers: [TelemetryService],
   styleUrls: ['./telemetry.component.less']
 })
-export class TelemetryComponent implements OnInit {
 
-  id: string
+export class TelemetryComponent implements OnInit {
+  stats$: Observable<any>;
   stats : AppInfo[]
   displayedColumns: string[] = ['userName', 'lastUpdatedAt'];
 
-  selection = new SelectionModel<AppInfo>(true, []);
-
-  constructor(private telemetryService: TelemetryService) {
-
-   }
+  constructor(
+    private telemetryService: TelemetryService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
-    this.showStats();
+    this.stats$ = this.route.paramMap.pipe(
+      switchMap(params => {
+        return this.telemetryService.getAllAppInfos()
+      })
+    );
   }
 
-  showStats() {
-    this.telemetryService.getAllAppInfos()
-      .subscribe((data: AppInfo[]) => {
-        //console.log(data);
-        this.stats = data
-      });
+  setId(row?: AppInfo) {
+    this.router.navigate(['/details/' + row.id]);
   }
-
-  clear() {
-    this.stats = undefined;
-  }
-
-    setId(row?: AppInfo) {
-      this.id = row.id
-      console.log(this.id)
-    }
-
 }

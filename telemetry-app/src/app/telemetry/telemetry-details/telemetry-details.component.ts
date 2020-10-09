@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {AppInfo, StatisticsEvent, TelemetryService} from '../telemetry.service'
-import { SimpleChanges } from '@angular/core';
+import {TelemetryService} from '../telemetry.service'
+import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-telemetry-details',
@@ -8,42 +10,27 @@ import { SimpleChanges } from '@angular/core';
   providers: [TelemetryService],
   styleUrls: ['./telemetry-details.component.less']
 })
+
 export class TelemetryDetailsComponent implements OnInit {
-  
-  @Input() id : string
-  
-  appInfo : AppInfo
-  events : StatisticsEvent[]
+  id : string
+  appInfo$ : Observable<any>;
+  events$ : Observable<any>
   displayedColumns: string[] = ['name', 'date', 'description'];
 
-  constructor(private telemetryService: TelemetryService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private telemetryService: TelemetryService
+  ) { }
 
   ngOnInit(): void {
-  }
-  
-  ngOnChanges(changes: SimpleChanges) {
-    this.showEvents(this.id)
-    this.showAppInfo(this.id)
-  }
-  
-  showEvents(id : string) {
-    //console.log(id)
-    this.telemetryService.getEvents(id)
-      .subscribe((data: StatisticsEvent[]) => {
-        console.log(data);
-        this.events = data
-      });
-  }
+    this.appInfo$ = this.route.paramMap.pipe(
+      switchMap((params: ParamMap) =>
+        this.telemetryService.getAppInfo(params.get('id')))
+    );
 
-  showAppInfo(id: string) {
-    this.telemetryService.getAppInfo(id)
-    .subscribe((data: AppInfo) => {
-      console.log(data);
-      this.appInfo = data
-    });
-  }
-
-  clear() {
-    this.events = undefined;
+    this.events$ = this.route.paramMap.pipe(
+      switchMap((params: ParamMap) =>
+        this.telemetryService.getEvents(params.get('id')))
+    );
   }
 }
