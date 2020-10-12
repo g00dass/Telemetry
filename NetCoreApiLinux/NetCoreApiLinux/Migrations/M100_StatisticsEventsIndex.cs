@@ -13,10 +13,11 @@ namespace NetCoreApiLinux.Migrations
 
         public override void Up(IMongoDatabase db)
         {
-            var appInfos = db.GetCollection<AppInfoDbo>("AppInfos");
             var id1 = Guid.NewGuid().ToString();
             var id2 = Guid.NewGuid().ToString();
-            appInfos.InsertMany(new []
+
+            var appInfos = db.GetCollection<AppInfoDbo>("AppInfos");
+            appInfos.InsertManyAsync(new []
             {
                 new AppInfoDbo
                 {
@@ -34,50 +35,55 @@ namespace NetCoreApiLinux.Migrations
                     UserName = "Петя Таксебе",
                     LastUpdatedAt = DateTimeOffset.Now
                 }
-            });
+            }).GetAwaiter().GetResult();
 
             var events = db.GetCollection<StatisticsEventDbo>("StatisticsEvents");
-            events.InsertMany(new []
+            events.InsertManyAsync(new []
             {
                 new StatisticsEventDbo
                 {
                     DeviceId = id1,
                     Date = DateTimeOffset.Now,
-                    Description = "Описание",
-                    Name = "Событие"
+                    Description = "Защита включена (установление защищенного соединения завершено)",
+                    Name = "startVpnComplete"
                 },
                 new StatisticsEventDbo
                 {
                     DeviceId = id1,
                     Date = DateTimeOffset.Now,
-                    Description = "Описание",
-                    Name = "Событие"
+                    Description = "Режим экономии энергии выключен",
+                    Name = "powerSaveModeOff"
                 },
                 new StatisticsEventDbo
                 {
                     DeviceId = id2,
                     Date = DateTimeOffset.Now,
-                    Description = "Описание",
-                    Name = "Событие"
+                    Description = "Установлено VPN-подключение в ОС",
+                    Name = "vpnEstablished"
                 },
                 new StatisticsEventDbo
                 {
                     DeviceId = id2,
                     Date = DateTimeOffset.Now,
-                    Description = "Описание",
-                    Name = "Событие"
+                    Description = "Начало процесса включения защиты",
+                    Name = "startVpn"
                 }
-            });
-            var deviceIdIndex = Builders<StatisticsEventDbo>.IndexKeys.Ascending(x => x.Name);
-            var dateIndex = Builders<StatisticsEventDbo>.IndexKeys.Descending(x => x.Date);
-            var combinedIndex = Builders<StatisticsEventDbo>.IndexKeys.Combine(new[] { deviceIdIndex, dateIndex });
-            var indexModel = new CreateIndexModel<StatisticsEventDbo>(combinedIndex, new CreateIndexOptions());
-            events.Indexes.CreateOne(indexModel);
+            }).GetAwaiter().GetResult();
+
+            var index = Builders<StatisticsEventDbo>
+                .IndexKeys
+                .Ascending(x => x.Name)
+                .Descending(x => x.Date);
+
+            events.Indexes
+                .CreateOneAsync(new CreateIndexModel<StatisticsEventDbo>(index, new CreateIndexOptions()))
+                .GetAwaiter().GetResult();
         }
 
         public override void Down(IMongoDatabase db)
         {
-            throw new System.NotImplementedException();
+            db.DropCollectionAsync("AppInfos").GetAwaiter().GetResult();
+            db.DropCollectionAsync("StatisticsEvents").GetAwaiter().GetResult();
         }
     }
 }
