@@ -20,6 +20,7 @@ namespace DataLayer.Tests
             services.AddSingleton<IMongoDbSettings>(mongoSettings);
             services.AddSingleton<IMongoDbProvider, MongoDbProvider>();
             services.AddSingleton<IAppInfoRepository, AppInfoRepository>();
+            services.AddSingleton<IStatisticsEventRepository, StatisticsEventRepository>();
         }
     }
 }
