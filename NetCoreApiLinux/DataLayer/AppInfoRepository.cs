@@ -10,6 +10,7 @@ namespace DataLayer
         public Task<AppInfoDbo[]> GetAllAsync();
         public Task<AppInfoDbo> FindAsync(string id);
         public Task AddOrUpdateAsync(AppInfoDbo dbo);
+        Task DeleteByIdAsync(string id);
     }
 
     public class AppInfoRepository : IAppInfoRepository
@@ -49,6 +50,14 @@ namespace DataLayer
             await AppInfos
                 .FindOneAndReplaceAsync(filterEq, dbo, new FindOneAndReplaceOptions<AppInfoDbo> { IsUpsert = true })
                 .ConfigureAwait(false);
+        }
+
+        public Task DeleteByIdAsync(string id)
+        {
+            var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, id);
+
+            return AppInfos
+                .DeleteOneAsync(filterEq);
         }
 
         private IMongoCollection<AppInfoDbo> AppInfos => db.GetCollection<AppInfoDbo>("AppInfos");
