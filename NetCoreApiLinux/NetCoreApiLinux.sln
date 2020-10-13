@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telemetry.Client", "Telemet
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telemetry.Client.Test", "Telemetry.Client.Test\Telemetry.Client.Test.csproj", "{EB34B593-E6FC-4423-81AA-0F67BD4D836C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer.IntegrationTests", "DataLayer.IntegrationTests\DataLayer.IntegrationTests.csproj", "{67C507A5-9C02-4FD9-9469-211954C25544}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{EB34B593-E6FC-4423-81AA-0F67BD4D836C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB34B593-E6FC-4423-81AA-0F67BD4D836C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB34B593-E6FC-4423-81AA-0F67BD4D836C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67C507A5-9C02-4FD9-9469-211954C25544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67C507A5-9C02-4FD9-9469-211954C25544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67C507A5-9C02-4FD9-9469-211954C25544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67C507A5-9C02-4FD9-9469-211954C25544}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

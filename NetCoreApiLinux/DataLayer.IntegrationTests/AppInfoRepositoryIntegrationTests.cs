@@ -4,7 +4,7 @@ using DataLayer.Dbo.AppInfo;
 using FluentAssertions;
 using Xunit;
 
-namespace DataLayer.Tests
+namespace DataLayer.IntegrationTests
 {
     // before test run IntegrationTests/ docker compose up --build
     public class AppInfoRepositoryIntegrationTests 

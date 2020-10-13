@@ -2,7 +2,7 @@ using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DataLayer.Tests
+namespace DataLayer.IntegrationTests
 {
     public class Startup
     {
