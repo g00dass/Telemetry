@@ -5,10 +5,18 @@ COPY *.sln .
 COPY docker-compose.dcproj .
 COPY NetCoreApiLinux/*.csproj ./NetCoreApiLinux/
 COPY DataLayer/*.csproj ./DataLayer/
+COPY DataLayer.Tests/*.csproj ./DataLayer.Tests/
+COPY Sandbox/*.csproj ./Sandbox/
+COPY Telemetry.Client/*.csproj ./Telemetry.Client/
+COPY Telemetry.Client.Test/*.csproj ./Telemetry.Client.Test/
 RUN dotnet restore NetCoreApiLinux.sln
 
 COPY NetCoreApiLinux/. ./NetCoreApiLinux/
 COPY DataLayer/. ./DataLayer/
+COPY DataLayer.Tests/. ./DataLayer.Tests/
+COPY Sandbox/. ./Sandbox/
+COPY Telemetry.Client/. ./Telemetry.Clients/
+COPY Telemetry.Client.Test/. ./Telemetry.Client.Test/
 WORKDIR /app/NetCoreApiLinux
 RUN dotnet publish "NetCoreApiLinux.csproj" -c Release -o /out --no-restore
 
