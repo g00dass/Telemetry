@@ -3,7 +3,6 @@ using AutoFixture.Xunit2;
 using DataLayer.Dbo.AppInfo;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Mongo.Migration;
 using Xunit;
 
 namespace DataLayer.IntegrationTests
@@ -18,14 +17,13 @@ namespace DataLayer.IntegrationTests
             services.AddSingleton<IAppInfoRepository, AppInfoRepository>();
 
             ServiceProvider = services.BuildServiceProvider();
-            //ServiceProvider.GetService<IMongoMigration>().Run();
         }
 
         public ServiceProvider ServiceProvider { get; private set; }
     }
 
 
-    // before test run docker compose up --build
+    // before test run build_integration_tests.ps1
     public class AppInfoRepositoryIntegrationTests : IClassFixture<AppInfoRepositoryDependencySetupFixture>
     {
         private readonly IAppInfoRepository repository;
