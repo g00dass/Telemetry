@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {StatInfo, TelemetryService} from './telemetry.service'
+import {AppInfo, TelemetryService,} from './telemetry.service'
+import { Router, ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-telemetry',
@@ -7,26 +10,26 @@ import {StatInfo, TelemetryService} from './telemetry.service'
   providers: [TelemetryService],
   styleUrls: ['./telemetry.component.less']
 })
-export class TelemetryComponent implements OnInit {
 
-  stats : StatInfo[]
-  displayedColumns: string[] = ['statistics.userName', 'lastUpdatedAt', 'statistics.appVersion', 'statistics.osName'];
-  constructor(private telemetryService: TelemetryService) { }
+export class TelemetryComponent implements OnInit {
+  stats$: Observable<AppInfo[]>;
+  displayedColumns: string[] = ['userName', 'lastUpdatedAt'];
+
+  constructor(
+    private telemetryService: TelemetryService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
-    this.showStats();
+    this.stats$ = this.route.paramMap.pipe(
+      switchMap(params => {
+        return this.telemetryService.getAllAppInfos()
+      })
+    );
   }
 
-  showStats() {
-    this.telemetryService.getStats()
-      .subscribe((data: StatInfo[]) => {
-        console.log(data);
-        this.stats = data
-      });
+  setId(row?: AppInfo) {
+    this.router.navigate(['/details/' + row.id]);
   }
-
-  clear() {
-    this.stats = undefined;
-  }
-
 }

@@ -2,16 +2,15 @@ using DataLayer;
 using System;
 using System.IO;
 using System.Reflection;
-using DataLayer.Dbo.AppInfo;
-using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using NetCoreApiLinux.Models.AppInfo;
+using Mongo.Migration.Documents;
+using Mongo.Migration.Startup;
+using Mongo.Migration.Startup.DotNetCore;
 
 namespace NetCoreApiLinux
 {
@@ -38,19 +37,15 @@ namespace NetCoreApiLinux
                 c.IncludeXmlComments(xmlPath);
             });
 
-            TypeAdapterConfig<string, AppId>
-                .NewConfig()
-                .MapWith(x => new AppId {DeviceId = Guid.Parse(x)});
-
-            TypeAdapterConfig<AppId, string>
-                .NewConfig()
-                .MapWith(x => x.DeviceId.ToString());
-
-            services.AddSingleton<IRepository<AppInfoDbo>, AppInfoRepository>();
+            services.AddSingleton<IAppInfoRepository, AppInfoRepository>();
+            services.AddSingleton<IStatisticsEventRepository, StatisticsEventRepository>();
             services.AddSingleton<IMongoDbProvider, MongoDbProvider>();
+            services.AddSingleton<IMongoClientProvider, MongoClientProvider>();
+            services.AddSingleton(x => x.GetRequiredService<IMongoClientProvider>().Client);
 
-            services.Configure<MongoDbSettings>(Configuration.GetSection("MongoDbSettings"));
-            services.AddSingleton<IMongoDbSettings>(x => x.GetRequiredService<IOptions<MongoDbSettings>>().Value);
+            var mongoSettings = new MongoDbSettings();
+            Configuration.GetSection("MongoDbSettings").Bind(mongoSettings);
+            services.AddSingleton<IMongoDbSettings>(mongoSettings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

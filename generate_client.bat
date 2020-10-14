@@ -1,0 +1,1 @@
+docker run -v %CD%:/myyyyyyyy openapitools/openapi-generator-cli generate -i /myyyyyyyy/swagger.json  -o /myyyyyyyy/swagger -g csharp-netcore  --additional-properties=packageName=Telemetry.Client 

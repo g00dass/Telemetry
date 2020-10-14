@@ -1,10 +1,19 @@
 using System;
+using System.Threading.Tasks;
 using DataLayer.Dbo.AppInfo;
 using MongoDB.Driver;
 
 namespace DataLayer
 {
-    public class AppInfoRepository : IRepository<AppInfoDbo>
+    public interface IAppInfoRepository
+    {
+        public Task<AppInfoDbo[]> GetAllAsync();
+        public Task<AppInfoDbo> FindAsync(string id);
+        public Task AddOrUpdateAsync(AppInfoDbo dbo);
+        Task DeleteByIdAsync(string id);
+    }
+
+    public class AppInfoRepository : IAppInfoRepository
     {
         private readonly IMongoDatabase db;
 
@@ -13,30 +22,42 @@ namespace DataLayer
             this.db = dbProvider.Db;
         }
 
-        public AppInfoDbo[] GetAll()
+        public async Task<AppInfoDbo[]> GetAllAsync()
         {
-            return AppInfos
-                .Find(_ => true)
+            return (await AppInfos
+                    .FindAsync(_ => true)
+                    .ConfigureAwait(false))
                 .ToList()
                 .ToArray();
         }
 
-        public AppInfoDbo Find(string id)
+        public async Task<AppInfoDbo> FindAsync(string id)
+        {
+            var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, id);
+
+            return (await AppInfos
+                    .FindAsync(filterEq)
+                    .ConfigureAwait(false))
+                .SingleOrDefault();
+        }
+
+        public async Task AddOrUpdateAsync(AppInfoDbo dbo)
+        {
+            var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, dbo.Id);
+
+            dbo.LastUpdatedAt = DateTimeOffset.Now;;
+
+            await AppInfos
+                .FindOneAndReplaceAsync(filterEq, dbo, new FindOneAndReplaceOptions<AppInfoDbo> { IsUpsert = true })
+                .ConfigureAwait(false);
+        }
+
+        public Task DeleteByIdAsync(string id)
         {
             var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, id);
 
             return AppInfos
-                .Find(filterEq)
-                .SingleOrDefault();
-        }
-
-        public void AddOrUpdate(AppInfoDbo dbo)
-        {
-            var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, dbo.Id);
-            dbo.LastUpdatedAt = DateTimeOffset.Now;
-
-            AppInfos
-                .FindOneAndReplace(filterEq, dbo, new FindOneAndReplaceOptions<AppInfoDbo> { IsUpsert = true });
+                .DeleteOneAsync(filterEq);
         }
 
         private IMongoCollection<AppInfoDbo> AppInfos => db.GetCollection<AppInfoDbo>("AppInfos");

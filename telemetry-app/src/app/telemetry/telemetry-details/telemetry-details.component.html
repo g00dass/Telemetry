@@ -1,0 +1,31 @@
+<div fxLayout="column">
+    <div *ngIf="appInfo$ | async as appInfo" fxLayout="column" fxLayoutGap="10px">
+        <label class="labelName">{{appInfo?.userName}}</label>
+        <label>Идентификатор: {{appInfo?.id}}</label>
+        <label>Версия ПО ViPNet Client: {{appInfo?.appVersion}}</label>
+        <label>Система: {{appInfo?.osName}}</label>
+    </div>
+
+    <h4>События ViPNet Client</h4>
+    <table mat-table [dataSource]="events$" class="mat-elevation-z8" fxFlex="100%">
+
+        <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>  </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef> Дата </th>
+        <td mat-cell *matCellDef="let element"> {{element.date | date:'dd/M/yyyy hh:mm:ss'}} </td>
+        </ng-container>
+
+    <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef> Описание события </th>
+        <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+        </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>
+</div>
