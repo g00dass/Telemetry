@@ -2,18 +2,35 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using DataLayer.Dbo.AppInfo;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace DataLayer.IntegrationTests
 {
+    public class AppInfoRepositoryDependencySetupFixture
+    {
+        public AppInfoRepositoryDependencySetupFixture()
+        {
+            IServiceCollection services = new ServiceCollection();
+
+            services = ContainerConfig.Configure(services);
+            services.AddSingleton<IAppInfoRepository, AppInfoRepository>();
+
+            ServiceProvider = services.BuildServiceProvider();
+        }
+
+        public ServiceProvider ServiceProvider { get; private set; }
+    }
+
     // before test run docker compose up --build
-    public class AppInfoRepositoryIntegrationTests 
+    public class AppInfoRepositoryIntegrationTests : IClassFixture<AppInfoRepositoryDependencySetupFixture>
     {
         private readonly IAppInfoRepository repository;
 
-        public AppInfoRepositoryIntegrationTests(IAppInfoRepository repository)
+        public AppInfoRepositoryIntegrationTests(AppInfoRepositoryDependencySetupFixture fixture)
         {
-            this.repository = repository;
+            var serviceProvider = fixture.ServiceProvider;
+            repository = serviceProvider.GetService<IAppInfoRepository>();
         }
 
         [Theory, AutoData]

@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DataLayer.IntegrationTests
 {
-    public class Startup
+    public class ContainerConfig
     {
-        public void ConfigureServices(IServiceCollection services)
+        public static IServiceCollection Configure(IServiceCollection services)
         {
             var environmentName = Environment.GetEnvironmentVariable("Hosting:Environment");
             var configuration = new ConfigurationBuilder()
@@ -19,8 +19,7 @@ namespace DataLayer.IntegrationTests
             configuration.GetSection("MongoDbSettings").Bind(mongoSettings);
             services.AddSingleton<IMongoDbSettings>(mongoSettings);
             services.AddSingleton<IMongoDbProvider, MongoDbProvider>();
-            services.AddSingleton<IAppInfoRepository, AppInfoRepository>();
-            services.AddSingleton<IStatisticsEventRepository, StatisticsEventRepository>();
+            return services;
         }
     }
 }

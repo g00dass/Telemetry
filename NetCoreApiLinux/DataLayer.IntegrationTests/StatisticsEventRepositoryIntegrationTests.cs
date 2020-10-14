@@ -4,18 +4,37 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using DataLayer.Dbo.AppInfo;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace DataLayer.IntegrationTests
 {
+    public class StatisticsEventRepositoryDependencySetupFixture
+    {
+        public StatisticsEventRepositoryDependencySetupFixture()
+        {
+            IServiceCollection services = new ServiceCollection();
+
+            services = ContainerConfig.Configure(services);
+
+            services.AddSingleton<IMongoDbProvider, MongoDbProvider>();
+            services.AddSingleton<IStatisticsEventRepository, StatisticsEventRepository>();
+
+            ServiceProvider = services.BuildServiceProvider();
+        }
+
+        public ServiceProvider ServiceProvider { get; private set; }
+    }
+
     // before test run docker compose up --build
-    public class StatisticsEventRepositoryIntegrationTests 
+    public class StatisticsEventRepositoryIntegrationTests : IClassFixture<StatisticsEventRepositoryDependencySetupFixture>
     {
         private readonly IStatisticsEventRepository repository;
 
-        public StatisticsEventRepositoryIntegrationTests(IStatisticsEventRepository repository)
+        public StatisticsEventRepositoryIntegrationTests(StatisticsEventRepositoryDependencySetupFixture fixture)
         {
-            this.repository = repository;
+            var serviceProvider = fixture.ServiceProvider;
+            repository = serviceProvider.GetService<IStatisticsEventRepository>();
         }
 
         [Theory, AutoData]
