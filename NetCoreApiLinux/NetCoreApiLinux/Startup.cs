@@ -46,14 +46,6 @@ namespace NetCoreApiLinux
             var mongoSettings = new MongoDbSettings();
             Configuration.GetSection("MongoDbSettings").Bind(mongoSettings);
             services.AddSingleton<IMongoDbSettings>(mongoSettings);
-
-            var settings = new MongoMigrationSettings
-            {
-                ConnectionString = mongoSettings.ConnectionString,
-                Database = mongoSettings.DatabaseName,
-                DatabaseMigrationVersion = new DocumentVersion(1, 0, 0) // Optional
-            };
-            services.AddMigration(settings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

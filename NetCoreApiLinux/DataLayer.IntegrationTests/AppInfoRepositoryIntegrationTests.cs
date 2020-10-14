@@ -22,7 +22,6 @@ namespace DataLayer.IntegrationTests
         public ServiceProvider ServiceProvider { get; private set; }
     }
 
-
     // before test run build_integration_tests.ps1
     public class AppInfoRepositoryIntegrationTests : IClassFixture<AppInfoRepositoryDependencySetupFixture>
     {
