@@ -5,6 +5,7 @@ using AutoFixture.Xunit2;
 using DataLayer.Dbo.AppInfo;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Mongo.Migration;
 using Xunit;
 
 namespace DataLayer.IntegrationTests
@@ -17,10 +18,10 @@ namespace DataLayer.IntegrationTests
 
             services = ContainerConfig.Configure(services);
 
-            services.AddSingleton<IMongoDbProvider, MongoDbProvider>();
             services.AddSingleton<IStatisticsEventRepository, StatisticsEventRepository>();
 
             ServiceProvider = services.BuildServiceProvider();
+            ServiceProvider.GetService<IMongoMigration>().Run();
         }
 
         public ServiceProvider ServiceProvider { get; private set; }
@@ -34,6 +35,7 @@ namespace DataLayer.IntegrationTests
         public StatisticsEventRepositoryIntegrationTests(StatisticsEventRepositoryDependencySetupFixture fixture)
         {
             var serviceProvider = fixture.ServiceProvider;
+
             repository = serviceProvider.GetService<IStatisticsEventRepository>();
         }
 

@@ -3,6 +3,7 @@ using AutoFixture.Xunit2;
 using DataLayer.Dbo.AppInfo;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Mongo.Migration;
 using Xunit;
 
 namespace DataLayer.IntegrationTests
@@ -17,10 +18,12 @@ namespace DataLayer.IntegrationTests
             services.AddSingleton<IAppInfoRepository, AppInfoRepository>();
 
             ServiceProvider = services.BuildServiceProvider();
+            //ServiceProvider.GetService<IMongoMigration>().Run();
         }
 
         public ServiceProvider ServiceProvider { get; private set; }
     }
+
 
     // before test run docker compose up --build
     public class AppInfoRepositoryIntegrationTests : IClassFixture<AppInfoRepositoryDependencySetupFixture>
@@ -30,6 +33,7 @@ namespace DataLayer.IntegrationTests
         public AppInfoRepositoryIntegrationTests(AppInfoRepositoryDependencySetupFixture fixture)
         {
             var serviceProvider = fixture.ServiceProvider;
+
             repository = serviceProvider.GetService<IAppInfoRepository>();
         }
 
@@ -38,10 +42,12 @@ namespace DataLayer.IntegrationTests
         {
             await repository.AddOrUpdateAsync(dbo1);
             await repository.AddOrUpdateAsync(dbo2);
-            (await repository.GetAllAsync()).Should().HaveCount(2);
+            var all = await repository.GetAllAsync();
 
             await repository.DeleteByIdAsync(dbo1.Id);
             await repository.DeleteByIdAsync(dbo2.Id);
+
+            all.Should().HaveCount(2);
             (await repository.GetAllAsync()).Should().HaveCount(0);
         }
 
@@ -50,7 +56,7 @@ namespace DataLayer.IntegrationTests
         {
             await repository.AddOrUpdateAsync(dbo);
 
-            (await repository.FindAsync(dbo.Id)).LastUpdatedAt.Should().Be(dbo.LastUpdatedAt);
+            (await repository.FindAsync(dbo.Id)).Should().BeEquivalentTo(dbo);
 
             await repository.DeleteByIdAsync(dbo.Id);
         }

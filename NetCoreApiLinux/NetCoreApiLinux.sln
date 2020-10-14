@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telemetry.Client.Test", "Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer.IntegrationTests", "DataLayer.IntegrationTests\DataLayer.IntegrationTests.csproj", "{67C507A5-9C02-4FD9-9469-211954C25544}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MongoMigrations", "MongoMigrations\MongoMigrations.csproj", "{8CB612BF-72DC-4EE2-9AB2-20A4D66A1CB7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{67C507A5-9C02-4FD9-9469-211954C25544}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67C507A5-9C02-4FD9-9469-211954C25544}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67C507A5-9C02-4FD9-9469-211954C25544}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CB612BF-72DC-4EE2-9AB2-20A4D66A1CB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CB612BF-72DC-4EE2-9AB2-20A4D66A1CB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CB612BF-72DC-4EE2-9AB2-20A4D66A1CB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CB612BF-72DC-4EE2-9AB2-20A4D66A1CB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
