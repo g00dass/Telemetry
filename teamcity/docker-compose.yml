@@ -1,0 +1,25 @@
+version: "3"
+services:
+  server:
+    image: jetbrains/teamcity-server
+    ports:
+      - "8112:8111"
+    volumes:
+      - ./mount/data:/data/teamcity_server/datadir
+      - ./mount/log:/opt/teamcity/logs
+  teamcity-agent:
+    image: jetbrains/teamcity-agent
+    environment:
+      - SERVER_URL=http://server:8111
+      - AGENT_NAME=regular_agent
+      - DOCKER_IN_DOCKER=start
+    privileged: true
+    volumes:
+      - ./mount/agent/data:/data/teamcity_agent/conf
+      - /var/run/docker.sock:/var/run/docker.sock
+    user: '0'
+  teamcity-minimal-agent:
+    image: jetbrains/teamcity-minimal-agent
+    environment:
+      - SERVER_URL=http://server:8111
+      - AGENT_NAME=minimal_agent
