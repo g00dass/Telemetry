@@ -9,7 +9,10 @@ services:
         environment:
           MongoDbSettings__Host: mongo
           MongoDbSettings__Port: 27017
-        stdin_open: true # docker run -i
+        depends_on:
+          - mongo
+        #stdin_open: true # docker run -i
+        #tty: true        # docker run -t
     mongo:
         image: mongo
         restart: always

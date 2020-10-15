@@ -12,3 +12,4 @@ COPY DataLayer.Tests/. ./DataLayer.Tests/
 COPY DataLayer.IntegrationTests/. ./DataLayer.IntegrationTests/
 COPY MongoMigrations/. ./MongoMigrations/
 RUN dotnet build MongoMigrations/MongoMigrations.csproj
+ENTRYPOINT pwsh DataLayer.IntegrationTests/startup.ps1
