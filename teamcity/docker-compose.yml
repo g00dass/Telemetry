@@ -8,6 +8,9 @@ services:
       - ./mount/data:/data/teamcity_server/datadir
       - ./mount/log:/opt/teamcity/logs
   teamcity-agent:
+    build:
+      dockerfile: ./agent/Dockerfile
+      context: .
     image: jetbrains/teamcity-agent
     environment:
       - SERVER_URL=http://server:8111
