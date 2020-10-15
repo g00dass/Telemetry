@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+    tests:
+        image: datalayertests
+        build:
+            context: ../
+            dockerfile: DataLayer.IntegrationTests/Dockerfile
+        environment:
+          MongoDbSettings__Host: mongo
+          MongoDbSettings__Port: 27017
+        networks:
+          - my-network-name
+networks:
+  my-network-name:
+    external:
+        name: custom_network

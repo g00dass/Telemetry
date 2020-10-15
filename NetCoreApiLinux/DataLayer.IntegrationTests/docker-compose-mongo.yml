@@ -1,18 +1,6 @@
 version: '3.4'
 
 services:
-    tests:
-        image: datalayertests
-        build:
-            context: ../
-            dockerfile: DataLayer.IntegrationTests/Dockerfile
-        environment:
-          MongoDbSettings__Host: mongo
-          MongoDbSettings__Port: 27017
-        depends_on:
-          - mongo
-        #stdin_open: true # docker run -i
-        #tty: true        # docker run -t
     mongo:
         image: mongo
         restart: always
@@ -21,6 +9,8 @@ services:
           MONGO_INITDB_ROOT_PASSWORD: example
         ports:
           - 27018:27017
+        networks:
+          - my-network-name
     mongo-express:
         image: mongo-express
         restart: always
@@ -31,3 +21,8 @@ services:
           ME_CONFIG_MONGODB_ADMINPASSWORD: example
         depends_on:
           - mongo
+        networks:
+          - my-network-name
+networks:
+  my-network-name:
+   name: custom_network
