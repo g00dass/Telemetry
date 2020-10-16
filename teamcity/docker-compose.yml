@@ -19,7 +19,6 @@ services:
     privileged: true
     volumes:
       - ./mount/agent/data:/data/teamcity_agent/conf
-      - /var/run/docker.sock:/var/run/docker.sock
     user: '0'
   teamcity-minimal-agent:
     image: jetbrains/teamcity-minimal-agent
