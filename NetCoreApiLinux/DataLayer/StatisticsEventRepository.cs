@@ -10,6 +10,7 @@ namespace DataLayer
         Task<StatisticsEventDbo[]> GetAllAsync();
         Task<StatisticsEventDbo[]> FindByDeviceIdAsync(string deviceId);
         Task AddAsync(StatisticsEventDbo[] dbos, string deviceId);
+        Task AddAsync(IClientSessionHandle session, StatisticsEventDbo[] dbos, string deviceId);
         Task DeleteByIdAsync(string id);
     }
 
@@ -47,6 +48,13 @@ namespace DataLayer
             dbos.ForEach(x => x.DeviceId = deviceId);
 
             return Events.InsertManyAsync(dbos);
+        }
+
+        public Task AddAsync(IClientSessionHandle session, StatisticsEventDbo[] dbos, string deviceId)
+        {
+            dbos.ForEach(x => x.DeviceId = deviceId);
+
+            return Events.InsertManyAsync(session, dbos);
         }
 
         public Task DeleteByIdAsync(string id)

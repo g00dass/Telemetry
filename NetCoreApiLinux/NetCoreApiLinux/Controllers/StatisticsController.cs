@@ -18,11 +18,13 @@ namespace NetCoreApiLinux.Controllers
         private static readonly ILogger log = Log.ForContext<StatisticsController>();
         private readonly IAppInfoRepository appInfoRepository;
         private readonly IStatisticsEventRepository eventsRepository;
+        private readonly IUnitOfWorkFactory unitOfWorkFactory;
 
-        public StatisticsController(IAppInfoRepository appInfoRepository, IStatisticsEventRepository eventsRepository)
+        public StatisticsController(IAppInfoRepository appInfoRepository, IStatisticsEventRepository eventsRepository, IUnitOfWorkFactory unitOfWorkFactory)
         {
             this.appInfoRepository = appInfoRepository;
             this.eventsRepository = eventsRepository;
+            this.unitOfWorkFactory = unitOfWorkFactory;
         }
 
         /// <summary>
@@ -38,11 +40,15 @@ namespace NetCoreApiLinux.Controllers
             if (request.Events.Any(x => x.Description.Length > 50))
                 throw new ArgumentException("Description length should be <= 50.");
 
-            var events = request.Events.Select(x => x.Adapt<StatisticsEventDbo>());
-            await eventsRepository.AddAsync(events.ToArray(), request.AppInfo.Id.ToString()).ConfigureAwait(false);
+            await using (var uof = unitOfWorkFactory.Create())
+            {
+                uof.Session.StartTransaction();
+                var events = request.Events.Select(x => x.Adapt<StatisticsEventDbo>());
+                await eventsRepository.AddAsync(uof.Session, events.ToArray(), request.AppInfo.Id.ToString()).ConfigureAwait(false);
 
-            var newAppInfo = request.AppInfo.Adapt<AppInfoDbo>();
-            await appInfoRepository.AddOrUpdateAsync(newAppInfo).ConfigureAwait(false);
+                var newAppInfo = request.AppInfo.Adapt<AppInfoDbo>();
+                await appInfoRepository.AddOrUpdateAsync(uof.Session, newAppInfo).ConfigureAwait(false);
+            }
 
             log.Information("Called {Method}, {@Request}", nameof(AddOrUpdateAppInfoAsync), request);
         }

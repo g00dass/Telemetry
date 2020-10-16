@@ -10,6 +10,7 @@ namespace DataLayer
         public Task<AppInfoDbo[]> GetAllAsync();
         public Task<AppInfoDbo> FindAsync(string id);
         public Task AddOrUpdateAsync(AppInfoDbo dbo);
+        public Task AddOrUpdateAsync(IClientSessionHandle session, AppInfoDbo dbo);
         Task DeleteByIdAsync(string id);
     }
 
@@ -49,6 +50,17 @@ namespace DataLayer
 
             await AppInfos
                 .FindOneAndReplaceAsync(filterEq, dbo, new FindOneAndReplaceOptions<AppInfoDbo> { IsUpsert = true })
+                .ConfigureAwait(false);
+        }
+
+        public async Task AddOrUpdateAsync(IClientSessionHandle session, AppInfoDbo dbo)
+        {
+            var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, dbo.Id);
+
+            dbo.LastUpdatedAt = DateTimeOffset.Now;
+
+            await AppInfos
+                .FindOneAndReplaceAsync(session, filterEq, dbo, new FindOneAndReplaceOptions<AppInfoDbo> { IsUpsert = true })
                 .ConfigureAwait(false);
         }
 
