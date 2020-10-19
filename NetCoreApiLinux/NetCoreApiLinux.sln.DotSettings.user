@@ -1,2 +1,21 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=2c04fa1a_002D563f_002D49b2_002D8adb_002D4409c8b7dac7/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="AppInfoRepositoryIntegrationTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::67C507A5-9C02-4FD9-9469-211954C25544::.NETCoreApp,Version=v3.1::DataLayer.IntegrationTests.AppInfoRepositoryIntegrationTests&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=79a87e8a_002D6581_002D41f1_002D8713_002D136e2546d778/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="PassingTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::B51ECA09-F911-4662-930B-9DE93394C4ED::.NETCoreApp,Version=v3.1::DataLayer.Tests.AppInfoRepositoryTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::EB34B593-E6FC-4423-81AA-0F67BD4D836C::.NETCoreApp,Version=v2.0::Telemetry.Client.Test.StatisticsApiTests.StatisticsApiAppInfoAllGetTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::1ED960F7-809D-47EA-8E88-D8AFE19EB761::.NETCoreApp,Version=v3.1::Sandbox.Test.GetAll&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::B51ECA09-F911-4662-930B-9DE93394C4ED::.NETCoreApp,Version=v3.1::DataLayer.Tests.AppInfoRepositoryIntegrationTests.Test&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::B51ECA09-F911-4662-930B-9DE93394C4ED::.NETCoreApp,Version=v3.1::DataLayer.Tests.StatisticsEventHistoryRepositoryIntegrationTests.Test&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::67C507A5-9C02-4FD9-9469-211954C25544::.NETCoreApp,Version=v3.1::DataLayer.IntegrationTests.StatisticsEventRepositoryIntegrationTests.GetAllAsync_DbContainsSome_ShouldReturnAll&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::67C507A5-9C02-4FD9-9469-211954C25544::.NETCoreApp,Version=v3.1::DataLayer.IntegrationTests.AppInfoRepositoryIntegrationTests.GetAllAsync_DbContainsSome_ShouldReturnAll&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::67C507A5-9C02-4FD9-9469-211954C25544::.NETCoreApp,Version=v3.1::DataLayer.IntegrationTests.AppInfoRepositoryIntegrationTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::67C507A5-9C02-4FD9-9469-211954C25544::.NETCoreApp,Version=v3.1::DataLayer.IntegrationTests.StatisticsEventRepositoryIntegrationTests.FindByDeviceIdAsync_DbContainsSome_ShouldFindThem&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::67C507A5-9C02-4FD9-9469-211954C25544::.NETCoreApp,Version=v3.1::DataLayer.IntegrationTests.StatisticsEventRepositoryIntegrationTests&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Mongo/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

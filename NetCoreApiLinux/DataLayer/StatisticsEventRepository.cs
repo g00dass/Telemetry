@@ -10,23 +10,24 @@ namespace DataLayer
         Task<StatisticsEventDbo[]> GetAllAsync();
         Task<StatisticsEventDbo[]> FindByDeviceIdAsync(string deviceId);
         Task AddAsync(StatisticsEventDbo[] dbos, string deviceId);
-        Task AddAsync(IClientSessionHandle session, StatisticsEventDbo[] dbos, string deviceId);
         Task DeleteByIdAsync(string id);
     }
 
     public class StatisticsEventRepository : IStatisticsEventRepository
     {
+        private readonly IClientSessionHandle session;
         private readonly IMongoDatabase db;
 
-        public StatisticsEventRepository(IMongoDbProvider dbProvider)
+        public StatisticsEventRepository(IMongoDatabase db, IClientSessionHandle session)
         {
-            this.db = dbProvider.Db;
+            this.session = session;
+            this.db = db;
         }
 
         public async Task<StatisticsEventDbo[]> GetAllAsync()
         {
             return (await Events
-                    .FindAsync(_ => true)
+                    .FindAsync(session,_ => true)
                     .ConfigureAwait(false))
                 .ToList()
                 .ToArray();
@@ -37,20 +38,13 @@ namespace DataLayer
             var filterEq = Builders<StatisticsEventDbo>.Filter.Eq(x => x.DeviceId, deviceId);
 
             return (await Events
-                    .FindAsync(filterEq)
+                    .FindAsync(session, filterEq)
                     .ConfigureAwait(false))
                 .ToList()
                 .ToArray();
         }
 
         public Task AddAsync(StatisticsEventDbo[] dbos, string deviceId)
-        {
-            dbos.ForEach(x => x.DeviceId = deviceId);
-
-            return Events.InsertManyAsync(dbos);
-        }
-
-        public Task AddAsync(IClientSessionHandle session, StatisticsEventDbo[] dbos, string deviceId)
         {
             dbos.ForEach(x => x.DeviceId = deviceId);
 
@@ -62,7 +56,7 @@ namespace DataLayer
             var filterEq = Builders<StatisticsEventDbo>.Filter.Eq(x => x.Id, id);
 
             return Events
-                .DeleteOneAsync(filterEq);
+                .DeleteOneAsync(session, filterEq);
         }
 
         private IMongoCollection<StatisticsEventDbo> Events => db.GetCollection<StatisticsEventDbo>("StatisticsEvents");

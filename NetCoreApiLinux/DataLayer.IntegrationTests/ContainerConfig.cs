@@ -18,7 +18,6 @@ namespace DataLayer.IntegrationTests
             var mongoSettings = new MongoDbSettings();
             configuration.GetSection("MongoDbSettings").Bind(mongoSettings);
             services.AddSingleton<IMongoDbSettings>(mongoSettings);
-            services.AddSingleton<IMongoDbProvider, MongoDbProvider>();
 
             return services;
         }

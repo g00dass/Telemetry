@@ -10,23 +10,24 @@ namespace DataLayer
         public Task<AppInfoDbo[]> GetAllAsync();
         public Task<AppInfoDbo> FindAsync(string id);
         public Task AddOrUpdateAsync(AppInfoDbo dbo);
-        public Task AddOrUpdateAsync(IClientSessionHandle session, AppInfoDbo dbo);
         Task DeleteByIdAsync(string id);
     }
 
     public class AppInfoRepository : IAppInfoRepository
     {
+        private readonly IClientSessionHandle session;
         private readonly IMongoDatabase db;
 
-        public AppInfoRepository(IMongoDbProvider dbProvider)
+        public AppInfoRepository(IMongoDatabase db, IClientSessionHandle session)
         {
-            this.db = dbProvider.Db;
+            this.session = session;
+            this.db = db;
         }
 
         public async Task<AppInfoDbo[]> GetAllAsync()
         {
             return (await AppInfos
-                    .FindAsync(_ => true)
+                    .FindAsync(session, _ => true)
                     .ConfigureAwait(false))
                 .ToList()
                 .ToArray();
@@ -37,7 +38,7 @@ namespace DataLayer
             var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, id);
 
             return (await AppInfos
-                    .FindAsync(filterEq)
+                    .FindAsync(session, filterEq)
                     .ConfigureAwait(false))
                 .SingleOrDefault();
         }
@@ -49,17 +50,6 @@ namespace DataLayer
             dbo.LastUpdatedAt = DateTimeOffset.Now;;
 
             await AppInfos
-                .FindOneAndReplaceAsync(filterEq, dbo, new FindOneAndReplaceOptions<AppInfoDbo> { IsUpsert = true })
-                .ConfigureAwait(false);
-        }
-
-        public async Task AddOrUpdateAsync(IClientSessionHandle session, AppInfoDbo dbo)
-        {
-            var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, dbo.Id);
-
-            dbo.LastUpdatedAt = DateTimeOffset.Now;
-
-            await AppInfos
                 .FindOneAndReplaceAsync(session, filterEq, dbo, new FindOneAndReplaceOptions<AppInfoDbo> { IsUpsert = true })
                 .ConfigureAwait(false);
         }
@@ -69,7 +59,7 @@ namespace DataLayer
             var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, id);
 
             return AppInfos
-                .DeleteOneAsync(filterEq);
+                .DeleteOneAsync(session, filterEq);
         }
 
         private IMongoCollection<AppInfoDbo> AppInfos => db.GetCollection<AppInfoDbo>("AppInfos");

@@ -3,10 +3,17 @@ version: '3.4'
 services:
     mongo:
         image: mongo
-        restart: always
+        hostname: mongo
+        command: --replSet telemetry-test-rs
         environment:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: example
+            MONGO_INITDB_DATABASE: TelemetryTest
+            MONGO_REPLICA_SET_NAME: telemetry-test-rs
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: example
+        healthcheck:
+            test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo -u root -p example --quiet) -eq 1
+            timeout: 5s
+            interval: 10s
         ports:
           - 27018:27017
     mongo-express:

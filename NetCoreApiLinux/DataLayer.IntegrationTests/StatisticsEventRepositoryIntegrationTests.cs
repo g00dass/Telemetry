@@ -17,6 +17,8 @@ namespace DataLayer.IntegrationTests
 
             services = ContainerConfig.Configure(services);
 
+            services.AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>();
+            services.AddSingleton<IMongoClientProvider, MongoClientProvider>();
             services.AddSingleton<IStatisticsEventRepository, StatisticsEventRepository>();
 
             ServiceProvider = services.BuildServiceProvider();
@@ -28,18 +30,21 @@ namespace DataLayer.IntegrationTests
     // before test run build_integration_tests.ps1
     public class StatisticsEventRepositoryIntegrationTests : IClassFixture<StatisticsEventRepositoryDependencySetupFixture>
     {
-        private readonly IStatisticsEventRepository repository;
+        private readonly IUnitOfWorkFactory unitOfWorkFactory;
 
         public StatisticsEventRepositoryIntegrationTests(StatisticsEventRepositoryDependencySetupFixture fixture)
         {
             var serviceProvider = fixture.ServiceProvider;
 
-            repository = serviceProvider.GetService<IStatisticsEventRepository>();
+            unitOfWorkFactory = serviceProvider.GetService<IUnitOfWorkFactory>();
         }
 
         [Theory, AutoData]
         public async Task GetAllAsync_DbContainsSome_ShouldReturnAll(StatisticsEventDbo dbo1, StatisticsEventDbo dbo2, Guid deviceId)
         {
+            await using var uof = unitOfWorkFactory.Create();
+            var repository = uof.GetRepository<IStatisticsEventRepository>();
+
             await repository.AddAsync(new [] { dbo1, dbo2 }, deviceId.ToString());
             (await repository.GetAllAsync()).Should().HaveCount(2);
             (await repository.GetAllAsync()).First().DeviceId.Should().Be(deviceId.ToString());
@@ -52,6 +57,9 @@ namespace DataLayer.IntegrationTests
         [Theory, AutoData]
         public async Task FindByDeviceIdAsync_DbContainsSome_ShouldFindThem(StatisticsEventDbo dbo1, StatisticsEventDbo dbo2, Guid deviceId)
         {
+            await using var uof = unitOfWorkFactory.Create();
+            var repository = uof.GetRepository<IStatisticsEventRepository>();
+
             await repository.AddAsync(new[] { dbo1, dbo2 }, deviceId.ToString());
             (await repository.FindByDeviceIdAsync(deviceId.ToString()))
                 .Should()

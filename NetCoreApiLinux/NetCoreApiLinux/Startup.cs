@@ -37,9 +37,7 @@ namespace NetCoreApiLinux
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddSingleton<IAppInfoRepository, AppInfoRepository>();
-            services.AddSingleton<IStatisticsEventRepository, StatisticsEventRepository>();
-            services.AddSingleton<IMongoDbProvider, MongoDbProvider>();
+            services.AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>();
             services.AddSingleton<IMongoClientProvider, MongoClientProvider>();
             services.AddSingleton(x => x.GetRequiredService<IMongoClientProvider>().Client);
 

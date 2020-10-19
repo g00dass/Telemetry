@@ -16,14 +16,10 @@ namespace NetCoreApiLinux.Controllers
     public class StatisticsController : ControllerBase
     {
         private static readonly ILogger log = Log.ForContext<StatisticsController>();
-        private readonly IAppInfoRepository appInfoRepository;
-        private readonly IStatisticsEventRepository eventsRepository;
         private readonly IUnitOfWorkFactory unitOfWorkFactory;
 
-        public StatisticsController(IAppInfoRepository appInfoRepository, IStatisticsEventRepository eventsRepository, IUnitOfWorkFactory unitOfWorkFactory)
+        public StatisticsController(IUnitOfWorkFactory unitOfWorkFactory)
         {
-            this.appInfoRepository = appInfoRepository;
-            this.eventsRepository = eventsRepository;
             this.unitOfWorkFactory = unitOfWorkFactory;
         }
 
@@ -42,12 +38,11 @@ namespace NetCoreApiLinux.Controllers
 
             await using (var uof = unitOfWorkFactory.Create())
             {
-                uof.Session.StartTransaction();
                 var events = request.Events.Select(x => x.Adapt<StatisticsEventDbo>());
-                await eventsRepository.AddAsync(uof.Session, events.ToArray(), request.AppInfo.Id.ToString()).ConfigureAwait(false);
+                await uof.GetRepository<IStatisticsEventRepository>().AddAsync(events.ToArray(), request.AppInfo.Id.ToString()).ConfigureAwait(false);
 
                 var newAppInfo = request.AppInfo.Adapt<AppInfoDbo>();
-                await appInfoRepository.AddOrUpdateAsync(uof.Session, newAppInfo).ConfigureAwait(false);
+                await uof.GetRepository<IAppInfoRepository>().AddOrUpdateAsync(newAppInfo).ConfigureAwait(false);
             }
 
             log.Information("Called {Method}, {@Request}", nameof(AddOrUpdateAppInfoAsync), request);
@@ -62,7 +57,10 @@ namespace NetCoreApiLinux.Controllers
         public async Task<AppInfo[]> GetAllAppInfosAsync()
         {
             log.Information($"Called {nameof(GetAllAppInfosAsync)}");
-            return (await appInfoRepository
+
+            await using var uof = unitOfWorkFactory.Create();
+
+            return (await uof.GetRepository<IAppInfoRepository>()
                     .GetAllAsync()
                     .ConfigureAwait(false))
                 .Select(x => x.Adapt<AppInfo>())
@@ -78,7 +76,10 @@ namespace NetCoreApiLinux.Controllers
         public async Task<AppInfo> GetAppInfoByIdAsync(Guid id)
         {
             log.Information($"Called {nameof(GetAppInfoByIdAsync)}");
-            return (await appInfoRepository
+
+            await using var uof = unitOfWorkFactory.Create();
+
+            return (await uof.GetRepository<IAppInfoRepository>()
                     .FindAsync(id.ToString())
                     .ConfigureAwait(false))
                 .Adapt<AppInfo>();
@@ -93,7 +94,10 @@ namespace NetCoreApiLinux.Controllers
         public async Task<StatisticsEvent[]> GetStatisticsEventsHistoryByAppInfoIdAsync(Guid id)
         {
             log.Information($"Called {nameof(GetStatisticsEventsHistoryByAppInfoIdAsync)}");
-            return (await eventsRepository
+
+            await using var uof = unitOfWorkFactory.Create();
+
+            return (await uof.GetRepository<IStatisticsEventRepository>()
                     .FindByDeviceIdAsync(id.ToString())
                     .ConfigureAwait(false))
                 .Select(x => x.Adapt<StatisticsEvent>())

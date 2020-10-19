@@ -2,7 +2,7 @@ using DataLayer.Dbo.AppInfo;
 using Mongo.Migration.Migrations.Database;
 using MongoDB.Driver;
 
-namespace Telemetry.MongoMigrations.Migrations
+namespace MongoMigrations.Migrations
 {
     public class M100_StatisticsEventsIndex : DatabaseMigration
     {

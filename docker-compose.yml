@@ -32,10 +32,17 @@ services:
           - "5342:5341"
     mongo:
         image: mongo
-        restart: always
+        hostname: mongo
+        command: --replSet telemetry-rs
         environment:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: example
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: example
+            MONGO_INITDB_DATABASE: Telemetry
+            MONGO_REPLICA_SET_NAME: telemetry-rs
+        healthcheck:
+            test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo -u root -p example --quiet) -eq 1
+            timeout: 5s
+            interval: 10s
         ports:
           - 27018:27017
     mongo-express:
