@@ -32,20 +32,7 @@ namespace DataLayer
 
         public T GetRepository<T>()
         {
-            var type = AppDomain.CurrentDomain
-                .GetAssemblies()
-                .SelectMany(x => x.GetTypes())
-                .Single(x => typeof(T).IsAssignableFrom(x) && !x.IsInterface);
-
-            return TypeInitializer<T>.CreateInstance(
-                type.GetConstructor(
-                    BindingFlags.Instance | BindingFlags.Public,
-                    null,
-                    CallingConventions.HasThis,
-                    new Type[] { typeof(IMongoDatabase), typeof(IClientSessionHandle) },
-                    null),
-                mongoClient.GetDatabase(settings.DatabaseName),
-                session);
+            return RepositoryInitializer<T>.Get()(new object[]{mongoClient.GetDatabase(settings.DatabaseName), session});
         }
 
         public async Task SaveChanges()
@@ -68,33 +55,45 @@ namespace DataLayer
             session?.Dispose();
         }
 
-        private class TypeInitializer<TResult>
+        private class RepositoryInitializer<TResult>
         {
-            private static readonly ConcurrentDictionary<string, Func<object[], TResult>> instanceCreationMethods =
+            private static readonly ConcurrentDictionary<string, Func<object[], TResult>> cache =
                 new ConcurrentDictionary<string, Func<object[], TResult>>();
 
-            public static TResult CreateInstance(ConstructorInfo constructorInfo, params object[] arguments)
+            public static Func<object[], TResult> Get()
             {
-                ParameterInfo[] parameterInfo = constructorInfo.GetParameters();
-                IEnumerable<Type> parameterTypes = parameterInfo.Select(p => p.ParameterType);
-                string constructorSignatureKey = GetConstructorSignatureKey(constructorInfo.DeclaringType, parameterTypes);
+                var factoryMethod = cache.GetOrAdd(typeof(TResult).FullName,
+                    _ =>
+                    {
+                        var type = AppDomain.CurrentDomain
+                            .GetAssemblies()
+                            .SelectMany(x => x.GetTypes())
+                            .Single(x => typeof(TResult).IsAssignableFrom(x) && !x.IsInterface);
 
-                Func<object[], TResult> factoryMethod = instanceCreationMethods.GetOrAdd(constructorSignatureKey, key =>
-                {
-                    var args = new Expression[parameterInfo.Length];
-                    ParameterExpression param = Expression.Parameter(typeof(object[]));
-                    for (int i = 0; i < parameterInfo.Length; i++)
-                        args[i] = Expression.Convert(Expression.ArrayIndex(param, Expression.Constant(i)), parameterInfo[i].ParameterType);
-                    return Expression
-                        .Lambda<Func<object[], TResult>>(Expression.Convert(Expression.New(constructorInfo, args), typeof(TResult)), param)
-                        .Compile();
-                });
+                        return CreateFactoryMethod(
+                            type.GetConstructor(
+                                BindingFlags.Instance | BindingFlags.Public,
+                                null,
+                                CallingConventions.HasThis,
+                                new Type[] { typeof(IMongoDatabase), typeof(IClientSessionHandle) },
+                                null));
+                    });
 
-                return factoryMethod(arguments);
+                return factoryMethod;
             }
 
-            private static string GetConstructorSignatureKey(Type type, IEnumerable<Type> argumentTypes) =>
-                $"{type.FullName} ({string.Join(", ", argumentTypes.Select(at => at.FullName))})";
+            private static Func<object[], TResult> CreateFactoryMethod(ConstructorInfo constructorInfo)
+            {
+                var parameterInfo = constructorInfo.GetParameters();
+                var args = new Expression[parameterInfo.Length];
+                var param = Expression.Parameter(typeof(object[]));
+
+                for (int i = 0; i < parameterInfo.Length; i++)
+                    args[i] = Expression.Convert(Expression.ArrayIndex(param, Expression.Constant(i)), parameterInfo[i].ParameterType);
+                return Expression
+                    .Lambda<Func<object[], TResult>>(Expression.Convert(Expression.New(constructorInfo, args), typeof(TResult)), param)
+                    .Compile();
+            }
         }
     }
 }
