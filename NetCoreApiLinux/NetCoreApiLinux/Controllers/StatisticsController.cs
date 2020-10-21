@@ -103,5 +103,22 @@ namespace NetCoreApiLinux.Controllers
                 .Select(x => x.Adapt<StatisticsEvent>())
                 .ToArray();
         }
+
+        /// <summary>
+        ///Delete all statistics events history for device by id
+        /// </summary>
+        /// <response code="200">History deleted</response>
+        [HttpDelete("appInfo/{id}/events-history")]
+        [ProducesResponseType(typeof(void), 200)]
+        public async Task DeleteAllStatisticsEventsHistoryByAppInfoIdAsync(Guid id)
+        {
+            log.Information($"Called {nameof(DeleteAllStatisticsEventsHistoryByAppInfoIdAsync)}");
+
+            await using var uof = unitOfWorkFactory.Create();
+
+            await uof.GetRepository<IStatisticsEventRepository>()
+                .DeleteByDeviceIdAsync(id.ToString())
+                .ConfigureAwait(false);
+        }
     }
 }

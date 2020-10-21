@@ -11,6 +11,7 @@ namespace DataLayer
         Task<StatisticsEventDbo[]> FindByDeviceIdAsync(string deviceId);
         Task AddAsync(StatisticsEventDbo[] dbos, string deviceId);
         Task DeleteByIdAsync(string id);
+        Task DeleteByDeviceIdAsync(string deviceId);
     }
 
     public class StatisticsEventRepository : IStatisticsEventRepository
@@ -57,6 +58,14 @@ namespace DataLayer
 
             return Events
                 .DeleteOneAsync(session, filterEq);
+        }
+
+        public Task DeleteByDeviceIdAsync(string deviceId)
+        {
+            var filterEq = Builders<StatisticsEventDbo>.Filter.Eq(x => x.DeviceId, deviceId);
+
+            return Events
+                .DeleteManyAsync(session, filterEq);
         }
 
         private IMongoCollection<StatisticsEventDbo> Events => db.GetCollection<StatisticsEventDbo>("StatisticsEvents");
