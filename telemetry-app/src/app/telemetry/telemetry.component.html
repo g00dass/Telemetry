@@ -1,4 +1,13 @@
 <h3>Telemetry</h3>
+<mat-checkbox class="checkbox-margin" [(ngModel)]="isAutoRefreshEnabled">Автообновление</mat-checkbox>
+<mat-form-field appearance="fill">
+  <mat-select [(value)]="autoRefreshPeriod" (selectionChange)="onPeriodChanged($event.value)" >
+    <mat-option *ngFor="let period of periods" [value]="period">
+      {{period}}s
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
 <div>
     <div
       fxLayout="row wrap" fxLayoutAlign="flex-start">

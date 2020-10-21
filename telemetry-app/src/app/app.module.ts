@@ -9,6 +9,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOptionModule } from '@angular/material/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -22,7 +27,12 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     AppRoutingModule,
     MatTableModule,
     MatCheckboxModule,
-    FlexLayoutModule
+    MatSelectModule,
+    MatFormFieldModule,
+    MatOptionModule,
+    FlexLayoutModule,
+    FormsModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

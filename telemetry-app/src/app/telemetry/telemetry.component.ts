@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {AppInfo, TelemetryService,} from './telemetry.service'
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, interval, Observable, Subject } from 'rxjs';
+import { filter, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-telemetry',
@@ -12,8 +12,14 @@ import { switchMap } from 'rxjs/operators';
 })
 
 export class TelemetryComponent implements OnInit {
-  stats$: Observable<AppInfo[]>;
+  destroy$: Subject<boolean> = new Subject<boolean>();
   displayedColumns: string[] = ['userName', 'lastUpdatedAt'];
+  isAutoRefreshEnabled = false
+  periods = [5, 15, 30, 60, 300]
+  autoRefreshPeriod = 30
+  
+  stats$ = new BehaviorSubject<AppInfo[]>([]);
+  intervalSubject = new BehaviorSubject<number>(0);
 
   constructor(
     private telemetryService: TelemetryService,
@@ -22,14 +28,35 @@ export class TelemetryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.stats$ = this.route.paramMap.pipe(
-      switchMap(params => {
-        return this.telemetryService.getAllAppInfos()
-      })
-    );
+
+    this.intervalSubject.next(this.autoRefreshPeriod * 1000)
+
+    let interval$ = this.intervalSubject.pipe(switchMap(x => interval(x)))
+
+    combineLatest(
+      [
+        interval$.pipe(startWith(0), filter(x => this.isAutoRefreshEnabled || x == 0)),
+        this.route.paramMap
+      ]
+    ).pipe(
+        switchMap(_ => {
+          return this.telemetryService.getAllAppInfos()
+        }),
+        takeUntil(this.destroy$)
+    ).subscribe(x => this.stats$.next(x));
   }
 
   setId(row?: AppInfo) {
     this.router.navigate(['/details/' + row.id]);
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    // Now let's also unsubscribe from the subject itself:
+    this.destroy$.unsubscribe();
+  }
+
+  onPeriodChanged(value) {
+    this.intervalSubject.next(this.autoRefreshPeriod * 1000)
   }
 }
