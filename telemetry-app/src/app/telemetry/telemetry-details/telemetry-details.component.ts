@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import {AppInfo, StatisticsEvent, TelemetryService} from '../telemetry.service'
-import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { AppInfo, StatisticsEvent, TelemetryService } from '../telemetry.service'
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 

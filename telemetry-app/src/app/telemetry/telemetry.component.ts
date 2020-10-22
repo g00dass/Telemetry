@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import {AppInfo, TelemetryService,} from './telemetry.service'
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { AppInfo, StatisticsEventType, TelemetryService } from './telemetry.service'
 import { Router, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, interval, Observable, Subject } from 'rxjs';
 import { filter, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-telemetry',
@@ -25,9 +26,21 @@ export class TelemetryComponent implements OnInit {
   constructor(
     private telemetryService: TelemetryService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog
   ) { }
 
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
+      width: '100%',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
+  
   ngOnInit(): void {
 
     this.intervalSubject.next(this.autoRefreshPeriod * 1000)
@@ -59,5 +72,40 @@ export class TelemetryComponent implements OnInit {
 
   onPeriodChanged(value) {
     this.intervalSubject.next(this.autoRefreshPeriod * 1000)
+  }
+}
+
+@Component({
+  selector: 'event-types-dialog',
+  templateUrl: 'event-types-dialog.html',
+  providers: [TelemetryService],
+})
+
+export class DialogOverviewExampleDialog {
+
+  eventTypes$ : Observable<StatisticsEventType[]>
+  displayedColumns: string[] = ['name', 'description'];
+
+  constructor(
+    private telemetryService: TelemetryService,
+    private router: Router,
+    public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any) {}
+
+  ngOnInit() : void {
+    this.eventTypes$ = this.telemetryService.getEventTypes();
+  }
+
+  onOkClick(): void {
+    this.dialogRef.close();
+  }
+
+  addType(type : string, description : string) {
+    this.telemetryService
+      .addEventTypes([{name : type, description : description}])
+      .subscribe(_ => {
+          this.router.routeReuseStrategy.shouldReuseRoute = () => false; 
+          this.router.navigate([this.router.url]);
+      })
   }
 }
