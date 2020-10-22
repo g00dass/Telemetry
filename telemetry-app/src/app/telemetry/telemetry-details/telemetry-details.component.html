@@ -1,6 +1,14 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
 <div fxLayout="column">
     <div *ngIf="appInfo$ | async as appInfo" fxLayout="column" fxLayoutGap="10px">
-        <label class="labelName">{{appInfo?.userName}}</label>
+        <div fxLayout="row">
+            <label class="labelName">{{appInfo?.userName}}</label>
+            <button mat-icon-button color="primary" (click)="onDeleteButtonClick()" *ngIf="(events$ | async)?.length > 0">
+                <mat-icon>delete</mat-icon> Удалить логи на узле
+              </button>
+        </div>
+
         <label>Идентификатор: {{appInfo?.id}}</label>
         <label>Версия ПО ViPNet Client: {{appInfo?.appVersion}}</label>
         <label>Система: {{appInfo?.osName}}</label>

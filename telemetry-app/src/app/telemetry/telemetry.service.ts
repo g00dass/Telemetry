@@ -36,4 +36,8 @@ export class TelemetryService {
     getEvents(id: string) : Observable<StatisticsEvent[]> {
         return this.http.get<StatisticsEvent[]>(this.telemetryUrl + 'appInfo/' + id + '/events-history');
     }
+
+    deleteEvents(id: string) : Observable<any> {
+        return this.http.delete(this.telemetryUrl + 'appInfo/' + id + '/events-history');
+    }
 }

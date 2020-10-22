@@ -27,6 +27,7 @@ namespace DataLayer
         public async Task<AppInfoDbo[]> GetAllAsync()
         {
             return (await AppInfos
+                    .WithReadPreference(ReadPreference.SecondaryPreferred)
                     .FindAsync(session, _ => true)
                     .ConfigureAwait(false))
                 .ToList()
@@ -38,6 +39,7 @@ namespace DataLayer
             var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, id);
 
             return (await AppInfos
+                    .WithReadPreference(ReadPreference.SecondaryPreferred)
                     .FindAsync(session, filterEq)
                     .ConfigureAwait(false))
                 .SingleOrDefault();
@@ -50,6 +52,7 @@ namespace DataLayer
             dbo.LastUpdatedAt = DateTimeOffset.Now;;
 
             await AppInfos
+                .WithWriteConcern(WriteConcern.WMajority)
                 .FindOneAndReplaceAsync(session, filterEq, dbo, new FindOneAndReplaceOptions<AppInfoDbo> { IsUpsert = true })
                 .ConfigureAwait(false);
         }
@@ -59,6 +62,7 @@ namespace DataLayer
             var filterEq = Builders<AppInfoDbo>.Filter.Eq(x => x.Id, id);
 
             return AppInfos
+                .WithWriteConcern(WriteConcern.WMajority)
                 .DeleteOneAsync(session, filterEq);
         }
 

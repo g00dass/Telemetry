@@ -33,4 +33,10 @@ export class TelemetryDetailsComponent implements OnInit {
         this.telemetryService.getEvents(params.get('id')))
     );
   }
+
+  onDeleteButtonClick() {
+    this.telemetryService
+      .deleteEvents(this.route.snapshot.paramMap.get('id'))
+      .subscribe(x => this.ngOnInit());
+  }
 }

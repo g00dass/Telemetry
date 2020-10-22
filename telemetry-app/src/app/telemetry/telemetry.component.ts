@@ -17,7 +17,8 @@ export class TelemetryComponent implements OnInit {
   isAutoRefreshEnabled = false
   periods = [5, 15, 30, 60, 300]
   autoRefreshPeriod = 30
-  
+  selectedId = null
+
   stats$ = new BehaviorSubject<AppInfo[]>([]);
   intervalSubject = new BehaviorSubject<number>(0);
 
@@ -47,6 +48,7 @@ export class TelemetryComponent implements OnInit {
   }
 
   setId(row?: AppInfo) {
+    this.selectedId = row.id
     this.router.navigate(['/details/' + row.id]);
   }
 

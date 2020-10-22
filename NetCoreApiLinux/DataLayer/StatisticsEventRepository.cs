@@ -11,6 +11,7 @@ namespace DataLayer
         Task<StatisticsEventDbo[]> FindByDeviceIdAsync(string deviceId);
         Task AddAsync(StatisticsEventDbo[] dbos, string deviceId);
         Task DeleteByIdAsync(string id);
+        Task DeleteByDeviceIdAsync(string deviceId);
     }
 
     public class StatisticsEventRepository : IStatisticsEventRepository
@@ -27,6 +28,7 @@ namespace DataLayer
         public async Task<StatisticsEventDbo[]> GetAllAsync()
         {
             return (await Events
+                    .WithReadPreference(ReadPreference.SecondaryPreferred)
                     .FindAsync(session,_ => true)
                     .ConfigureAwait(false))
                 .ToList()
@@ -38,6 +40,7 @@ namespace DataLayer
             var filterEq = Builders<StatisticsEventDbo>.Filter.Eq(x => x.DeviceId, deviceId);
 
             return (await Events
+                    .WithReadPreference(ReadPreference.SecondaryPreferred)
                     .FindAsync(session, filterEq)
                     .ConfigureAwait(false))
                 .ToList()
@@ -48,7 +51,9 @@ namespace DataLayer
         {
             dbos.ForEach(x => x.DeviceId = deviceId);
 
-            return Events.InsertManyAsync(session, dbos);
+            return Events
+                .WithWriteConcern(WriteConcern.WMajority)
+                .InsertManyAsync(session, dbos);
         }
 
         public Task DeleteByIdAsync(string id)
@@ -56,7 +61,17 @@ namespace DataLayer
             var filterEq = Builders<StatisticsEventDbo>.Filter.Eq(x => x.Id, id);
 
             return Events
+                .WithWriteConcern(WriteConcern.WMajority)
                 .DeleteOneAsync(session, filterEq);
+        }
+
+        public Task DeleteByDeviceIdAsync(string deviceId)
+        {
+            var filterEq = Builders<StatisticsEventDbo>.Filter.Eq(x => x.DeviceId, deviceId);
+
+            return Events
+                .WithWriteConcern(WriteConcern.WMajority)
+                .DeleteManyAsync(session, filterEq);
         }
 
         private IMongoCollection<StatisticsEventDbo> Events => db.GetCollection<StatisticsEventDbo>("StatisticsEvents");

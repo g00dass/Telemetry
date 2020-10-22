@@ -24,7 +24,7 @@
         </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click) = "setId(row)"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click) = "setId(row)" [ngClass]="{highlight : selectedId == row.id}"></tr>
 
     </table>
     <div fxFlex="70%">
