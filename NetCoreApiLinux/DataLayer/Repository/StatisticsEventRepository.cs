@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
-using DataLayer.Dbo.AppInfo;
+using DataLayer.Dbo;
+using Microsoft.Extensions.Caching.Memory;
 using MongoDB.Driver;
 using MoreLinq;
 
-namespace DataLayer
+namespace DataLayer.Repository
 {
     public interface IStatisticsEventRepository
     {
@@ -17,11 +18,13 @@ namespace DataLayer
     public class StatisticsEventRepository : IStatisticsEventRepository
     {
         private readonly IClientSessionHandle session;
+        private readonly IMemoryCache cache;
         private readonly IMongoDatabase db;
 
-        public StatisticsEventRepository(IMongoDatabase db, IClientSessionHandle session)
+        public StatisticsEventRepository(IMongoDatabase db, IClientSessionHandle session, IMemoryCache cache)
         {
             this.session = session;
+            this.cache = cache;
             this.db = db;
         }
 

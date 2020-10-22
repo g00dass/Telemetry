@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using DataLayer.Dbo.AppInfo;
+using DataLayer.Dbo;
+using DataLayer.Repository;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;

@@ -1,7 +1,7 @@
 using System;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace DataLayer.Dbo.AppInfo
+namespace DataLayer.Dbo
 {
     public class AppInfoDbo
     {

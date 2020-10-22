@@ -2,8 +2,11 @@ using DataLayer;
 using System;
 using System.IO;
 using System.Reflection;
+using DataLayer.Dbo;
+using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using Mongo.Migration.Documents;
 using Mongo.Migration.Startup;
 using Mongo.Migration.Startup.DotNetCore;
+using NetCoreApiLinux.Models.AppInfo;
 
 namespace NetCoreApiLinux
 {
@@ -41,9 +45,14 @@ namespace NetCoreApiLinux
             services.AddSingleton<IMongoClientProvider, MongoClientProvider>();
             services.AddSingleton(x => x.GetRequiredService<IMongoClientProvider>().Client);
 
+            services.AddSingleton<IMemoryCache, MemoryCache>();
+
             var mongoSettings = new MongoDbSettings();
             Configuration.GetSection("MongoDbSettings").Bind(mongoSettings);
             services.AddSingleton<IMongoDbSettings>(mongoSettings);
+
+            TypeAdapterConfig<StatisticsEventDbo, StatisticsEvent>.NewConfig()
+                .Unflattening(true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

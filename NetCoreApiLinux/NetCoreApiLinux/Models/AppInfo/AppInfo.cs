@@ -10,6 +10,6 @@ namespace NetCoreApiLinux.Models.AppInfo
         public string UserName { get; set; }
         public string OsName { get; set; }
 
-        public DateTimeOffset LastUpdatedAt { get; set; }
+        public DateTimeOffset? LastUpdatedAt { get; set; }
     }
 }

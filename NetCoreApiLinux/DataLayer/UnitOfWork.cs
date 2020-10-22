@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 using MongoDB.Driver;
 using Serilog;
 
@@ -20,19 +21,21 @@ namespace DataLayer
     {
         private readonly IMongoClient mongoClient;
         private readonly IMongoDbSettings settings;
+        private readonly IMemoryCache cache;
         private readonly IClientSessionHandle session;
 
-        public UnitOfWork(IMongoClient mongoClient, IMongoDbSettings settings)
+        public UnitOfWork(IMongoClient mongoClient, IMongoDbSettings settings, IMemoryCache cache)
         {
             this.mongoClient = mongoClient;
             this.settings = settings;
+            this.cache = cache;
             session = mongoClient.StartSession();
             session.StartTransaction();
         }
 
         public T GetRepository<T>()
         {
-            return RepositoryInitializer<T>.Get()(new object[]{mongoClient.GetDatabase(settings.DatabaseName), session});
+            return RepositoryInitializer<T>.Get()(new object[]{mongoClient.GetDatabase(settings.DatabaseName), session, cache});
         }
 
         public async Task SaveChanges()
@@ -41,7 +44,7 @@ namespace DataLayer
             {
                 await session.CommitTransactionAsync();
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Log.Error("Transaction failed");
                 await session.AbortTransactionAsync();
@@ -75,7 +78,7 @@ namespace DataLayer
                                 BindingFlags.Instance | BindingFlags.Public,
                                 null,
                                 CallingConventions.HasThis,
-                                new Type[] { typeof(IMongoDatabase), typeof(IClientSessionHandle) },
+                                new Type[] { typeof(IMongoDatabase), typeof(IClientSessionHandle), typeof(IMemoryCache) },
                                 null));
                     });
 

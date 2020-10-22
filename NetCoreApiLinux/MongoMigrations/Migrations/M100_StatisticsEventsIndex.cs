@@ -1,4 +1,4 @@
-using DataLayer.Dbo.AppInfo;
+using DataLayer.Dbo;
 using Mongo.Migration.Migrations.Database;
 using MongoDB.Driver;
 
@@ -19,7 +19,7 @@ namespace MongoMigrations.Migrations
 
             var index = Builders<StatisticsEventDbo>
                 .IndexKeys
-                .Ascending(x => x.Name)
+                .Ascending(x => x.TypeName)
                 .Descending(x => x.Date);
 
             events.Indexes

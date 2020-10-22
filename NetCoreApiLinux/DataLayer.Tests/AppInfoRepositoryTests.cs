@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using DataLayer.Dbo.AppInfo;
+using DataLayer.Repository;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Operations;
 using Moq;

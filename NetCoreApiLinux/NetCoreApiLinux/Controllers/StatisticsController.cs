@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DataLayer;
-using DataLayer.Dbo.AppInfo;
+using DataLayer.Dbo;
+using DataLayer.Repository;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreApiLinux.Models.AppInfo;
@@ -26,15 +28,15 @@ namespace NetCoreApiLinux.Controllers
         /// <summary>
         /// Create or update statistics meta and merge events history
         /// </summary>
-        /// <response code="200">AppInfo created</response>
+        /// <response code="200">AppInfo created or updated</response>
         [HttpPost("appInfo")]
         public async Task AddOrUpdateAppInfoAsync([FromBody] AppInfoRequest request)
         {
             if (request.AppInfo.Id == null)
                 throw new ArgumentException("Id should not be null.");
 
-            if (request.Events.Any(x => x.Description.Length > 50))
-                throw new ArgumentException("Description length should be <= 50.");
+            //if (request.Events.Any(x => x.Description.Length > 50))
+            //    throw new ArgumentException("Description length should be <= 50.");
 
             await using (var uof = unitOfWorkFactory.Create())
             {
@@ -97,10 +99,14 @@ namespace NetCoreApiLinux.Controllers
 
             await using var uof = unitOfWorkFactory.Create();
 
-            return (await uof.GetRepository<IStatisticsEventRepository>()
+            var types = await uof.GetRepository<IStatisticsEventTypeRepository>().GetAllAsync().ConfigureAwait(false);
+
+            var a = (await uof.GetRepository<IStatisticsEventRepository>()
                     .FindByDeviceIdAsync(id.ToString())
-                    .ConfigureAwait(false))
-                .Select(x => x.Adapt<StatisticsEvent>())
+                    .ConfigureAwait(false));
+                var b = a.Select(x => x.Adapt<StatisticsEvent>());
+            return b
+                .Do(x => x.Type.Description = types.GetValueOrDefault(x.Type.Name)?.Description)
                 .ToArray();
         }
 
@@ -119,6 +125,40 @@ namespace NetCoreApiLinux.Controllers
             await uof.GetRepository<IStatisticsEventRepository>()
                 .DeleteByDeviceIdAsync(id.ToString())
                 .ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Get StatisticsEventTypes for all types
+        /// </summary>
+        /// <response code="200">Array with StatisticsEventType for all types</response>
+        [HttpGet("event-types")]
+        [ProducesResponseType(typeof(StatisticsEventType[]), 200)]
+        public async Task<StatisticsEventType[]> GetStatisticsEventsTypesAsync()
+        {
+            log.Information($"Called {nameof(GetStatisticsEventsTypesAsync)}");
+
+            await using var uof = unitOfWorkFactory.Create();
+
+            return (await uof.GetRepository<IStatisticsEventTypeRepository>().GetAllAsync().ConfigureAwait(false))
+                .Values
+                .Select(x => x.Adapt<StatisticsEventType>())
+                .ToArray();
+        }
+
+        /// <summary>
+        /// Create or update StatisticsEventTypes
+        /// </summary>
+        /// <response code="200">StatisticsEventTypes created or updated</response>
+        [HttpPost("event-types")]
+        public async Task CreateOrUpdateStatisticsEventsTypesAsync([FromBody] StatisticsEventType[] types)
+        {
+            log.Information($"Called {nameof(GetStatisticsEventsTypesAsync)}");
+
+            await using var uof = unitOfWorkFactory.Create();
+
+            await uof.GetRepository<IStatisticsEventTypeRepository>()
+                    .AddOrUpdateAsync(types.Select(x => x.Adapt<StatisticsEventTypeDbo>()).ToArray())
+                    .ConfigureAwait(false);
         }
     }
 }
