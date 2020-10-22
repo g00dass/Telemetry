@@ -14,6 +14,12 @@ export interface AppInfo {
 export interface StatisticsEvent {
     date : Date
     name : string
+    type : StatisticsEventType
+}
+
+export interface StatisticsEventType
+{
+    name : string
     description : string
 }
 
