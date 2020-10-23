@@ -39,7 +39,7 @@ namespace Telemetry.Client.Model
         /// <param name="userName">userName.</param>
         /// <param name="osName">osName.</param>
         /// <param name="lastUpdatedAt">lastUpdatedAt.</param>
-        public AppInfo(Guid id = default(Guid), string appVersion = default(string), string userName = default(string), string osName = default(string), DateTime lastUpdatedAt = default(DateTime))
+        public AppInfo(Guid id = default(Guid), string appVersion = default(string), string userName = default(string), string osName = default(string), DateTime? lastUpdatedAt = default(DateTime?))
         {
             this.Id = id;
             this.AppVersion = appVersion;
@@ -75,8 +75,8 @@ namespace Telemetry.Client.Model
         /// <summary>
         /// Gets or Sets LastUpdatedAt
         /// </summary>
-        [DataMember(Name = "lastUpdatedAt", EmitDefaultValue = false)]
-        public DateTime LastUpdatedAt { get; set; }
+        [DataMember(Name = "lastUpdatedAt", EmitDefaultValue = true)]
+        public DateTime? LastUpdatedAt { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object

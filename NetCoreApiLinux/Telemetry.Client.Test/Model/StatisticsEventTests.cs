@@ -20,7 +20,7 @@ using Telemetry.Client.Client;
 using System.Reflection;
 using Newtonsoft.Json;
 
-namespace Telemetry.Client.Test
+namespace Telemetry.Client.Test.Model
 {
     /// <summary>
     ///  Class for testing StatisticsEvent
@@ -65,20 +65,12 @@ namespace Telemetry.Client.Test
             // TODO unit test for the property 'Date'
         }
         /// <summary>
-        /// Test the property 'Name'
+        /// Test the property 'Type'
         /// </summary>
         [Fact]
-        public void NameTest()
+        public void TypeTest()
         {
-            // TODO unit test for the property 'Name'
-        }
-        /// <summary>
-        /// Test the property 'Description'
-        /// </summary>
-        [Fact]
-        public void DescriptionTest()
-        {
-            // TODO unit test for the property 'Description'
+            // TODO unit test for the property 'Type'
         }
 
     }

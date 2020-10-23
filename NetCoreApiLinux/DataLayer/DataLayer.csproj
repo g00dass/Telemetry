@@ -1,15 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mapster" Version="6.5.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.9" />
-    <PackageReference Include="MongoDB.Driver" Version="2.11.2" />
-    <PackageReference Include="morelinq" Version="3.3.2" />
-    <PackageReference Include="Serilog" Version="2.9.0" />
+      <PackageReference Include="Confluent.Kafka" Version="1.5.2" />
+      <PackageReference Include="Mapster" Version="6.5.0" />
+      <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.9" />
+      <PackageReference Include="MongoDB.Driver" Version="2.11.2" />
+      <PackageReference Include="morelinq" Version="3.3.2" />
+      <PackageReference Include="Serilog" Version="2.9.0" />
   </ItemGroup>
 
 </Project>

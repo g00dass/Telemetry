@@ -20,7 +20,7 @@ using Telemetry.Client.Client;
 using System.Reflection;
 using Newtonsoft.Json;
 
-namespace Telemetry.Client.Test
+namespace Telemetry.Client.Test.Model
 {
     /// <summary>
     ///  Class for testing AppInfo

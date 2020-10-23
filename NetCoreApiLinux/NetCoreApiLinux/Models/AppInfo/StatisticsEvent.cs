@@ -6,5 +6,6 @@ namespace NetCoreApiLinux.Models.AppInfo
     {
         public DateTimeOffset Date { get; set; }
         public StatisticsEventType Type { get; set; }
+        public bool? IsCritical { get; set; }
     }
 }

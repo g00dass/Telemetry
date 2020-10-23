@@ -18,9 +18,10 @@ using Xunit;
 
 using Telemetry.Client.Client;
 using Telemetry.Client.Api;
-using Telemetry.Client.Model;
+// uncomment below to import models
+//using Telemetry.Client.Model;
 
-namespace Telemetry.Client.Test
+namespace Telemetry.Client.Test.Api
 {
     /// <summary>
     ///  Class for testing StatisticsApi
@@ -35,7 +36,7 @@ namespace Telemetry.Client.Test
 
         public StatisticsApiTests()
         {
-            instance = new StatisticsApi("https://localhost:32775/");
+            instance = new StatisticsApi();
         }
 
         public void Dispose()
@@ -60,8 +61,19 @@ namespace Telemetry.Client.Test
         public void StatisticsApiAppInfoAllGetTest()
         {
             // TODO uncomment below to test the method and replace null with proper value
-            var response = instance.StatisticsApiAppInfoAllGet();
-            Assert.IsType<List<AppInfo>>(response);
+            //var response = instance.StatisticsApiAppInfoAllGet();
+            //Assert.IsType<List<AppInfo>>(response);
+        }
+
+        /// <summary>
+        /// Test StatisticsApiAppInfoIdEventsHistoryDelete
+        /// </summary>
+        [Fact]
+        public void StatisticsApiAppInfoIdEventsHistoryDeleteTest()
+        {
+            // TODO uncomment below to test the method and replace null with proper value
+            //Guid id = null;
+            //instance.StatisticsApiAppInfoIdEventsHistoryDelete(id);
         }
 
         /// <summary>
@@ -97,6 +109,28 @@ namespace Telemetry.Client.Test
             // TODO uncomment below to test the method and replace null with proper value
             //AppInfoRequest appInfoRequest = null;
             //instance.StatisticsApiAppInfoPost(appInfoRequest);
+        }
+
+        /// <summary>
+        /// Test StatisticsApiEventTypesGet
+        /// </summary>
+        [Fact]
+        public void StatisticsApiEventTypesGetTest()
+        {
+            // TODO uncomment below to test the method and replace null with proper value
+            //var response = instance.StatisticsApiEventTypesGet();
+            //Assert.IsType<List<StatisticsEventType>>(response);
+        }
+
+        /// <summary>
+        /// Test StatisticsApiEventTypesPost
+        /// </summary>
+        [Fact]
+        public void StatisticsApiEventTypesPostTest()
+        {
+            // TODO uncomment below to test the method and replace null with proper value
+            //List<StatisticsEventType> statisticsEventType = null;
+            //instance.StatisticsApiEventTypesPost(statisticsEventType);
         }
     }
 }

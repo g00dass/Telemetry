@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace NetCoreApiLinux.Controllers
+namespace NetCoreApiLinux
 {
     public static class EnumerableExtensions
     {

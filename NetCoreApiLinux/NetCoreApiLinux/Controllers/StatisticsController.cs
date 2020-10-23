@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataLayer;
 using DataLayer.Dbo;
+using DataLayer.Kafka;
 using DataLayer.Repository;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
@@ -19,10 +20,12 @@ namespace NetCoreApiLinux.Controllers
     {
         private static readonly ILogger log = Log.ForContext<StatisticsController>();
         private readonly IUnitOfWorkFactory unitOfWorkFactory;
+        private readonly ICriticalEventsProducer criticalEventsProducer;
 
-        public StatisticsController(IUnitOfWorkFactory unitOfWorkFactory)
+        public StatisticsController(IUnitOfWorkFactory unitOfWorkFactory, ICriticalEventsProducer criticalEventsProducer)
         {
             this.unitOfWorkFactory = unitOfWorkFactory;
+            this.criticalEventsProducer = criticalEventsProducer;
         }
 
         /// <summary>
@@ -35,9 +38,6 @@ namespace NetCoreApiLinux.Controllers
             if (request.AppInfo.Id == null)
                 throw new ArgumentException("Id should not be null.");
 
-            //if (request.Events.Any(x => x.Description.Length > 50))
-            //    throw new ArgumentException("Description length should be <= 50.");
-
             await using (var uof = unitOfWorkFactory.Create())
             {
                 var events = request.Events.Select(x => x.Adapt<StatisticsEventDbo>());
@@ -46,6 +46,18 @@ namespace NetCoreApiLinux.Controllers
                 var newAppInfo = request.AppInfo.Adapt<AppInfoDbo>();
                 await uof.GetRepository<IAppInfoRepository>().AddOrUpdateAsync(newAppInfo).ConfigureAwait(false);
             }
+
+            var criticalEvents = request.Events
+                .Where(x => x.IsCritical == true)
+                .Select(x => new CriticalEventMessage
+                {
+                    Id = request.AppInfo.Id,
+                    Date = x.Date,
+                    TypeName = x.Type.Name,
+                    TypeDescription = x.Type.Description
+                });
+
+            criticalEventsProducer.Send(criticalEvents);
 
             log.Information("Called {Method}, {@Request}", nameof(AddOrUpdateAppInfoAsync), request);
         }
@@ -101,11 +113,10 @@ namespace NetCoreApiLinux.Controllers
 
             var types = await uof.GetRepository<IStatisticsEventTypeRepository>().GetAllAsync().ConfigureAwait(false);
 
-            var a = (await uof.GetRepository<IStatisticsEventRepository>()
+            return (await uof.GetRepository<IStatisticsEventRepository>()
                     .FindByDeviceIdAsync(id.ToString())
-                    .ConfigureAwait(false));
-                var b = a.Select(x => x.Adapt<StatisticsEvent>());
-            return b
+                    .ConfigureAwait(false))
+                .Select(x => x.Adapt<StatisticsEvent>())
                 .Do(x => x.Type.Description = types.GetValueOrDefault(x.Type.Name)?.Description)
                 .ToArray();
         }
@@ -153,6 +164,9 @@ namespace NetCoreApiLinux.Controllers
         public async Task CreateOrUpdateStatisticsEventsTypesAsync([FromBody] StatisticsEventType[] types)
         {
             log.Information($"Called {nameof(GetStatisticsEventsTypesAsync)}");
+
+            if (types.Any(x => x.Description.Length > 50))
+                throw new ArgumentException("Description length should be <= 50.");
 
             await using var uof = unitOfWorkFactory.Create();
 

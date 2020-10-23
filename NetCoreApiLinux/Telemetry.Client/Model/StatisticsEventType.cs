@@ -26,33 +26,33 @@ using OpenAPIDateConverter = Telemetry.Client.Client.OpenAPIDateConverter;
 namespace Telemetry.Client.Model
 {
     /// <summary>
-    /// StatisticsEvent
+    /// StatisticsEventType
     /// </summary>
-    [DataContract(Name = "StatisticsEvent")]
-    public partial class StatisticsEvent : IEquatable<StatisticsEvent>, IValidatableObject
+    [DataContract(Name = "StatisticsEventType")]
+    public partial class StatisticsEventType : IEquatable<StatisticsEventType>, IValidatableObject
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StatisticsEvent" /> class.
+        /// Initializes a new instance of the <see cref="StatisticsEventType" /> class.
         /// </summary>
-        /// <param name="date">date.</param>
-        /// <param name="type">type.</param>
-        public StatisticsEvent(DateTime date = default(DateTime), StatisticsEventType type = default(StatisticsEventType))
+        /// <param name="name">name.</param>
+        /// <param name="description">description.</param>
+        public StatisticsEventType(string name = default(string), string description = default(string))
         {
-            this.Date = date;
-            this.Type = type;
+            this.Name = name;
+            this.Description = description;
         }
 
         /// <summary>
-        /// Gets or Sets Date
+        /// Gets or Sets Name
         /// </summary>
-        [DataMember(Name = "date", EmitDefaultValue = false)]
-        public DateTime Date { get; set; }
+        [DataMember(Name = "name", EmitDefaultValue = true)]
+        public string Name { get; set; }
 
         /// <summary>
-        /// Gets or Sets Type
+        /// Gets or Sets Description
         /// </summary>
-        [DataMember(Name = "type", EmitDefaultValue = false)]
-        public StatisticsEventType Type { get; set; }
+        [DataMember(Name = "description", EmitDefaultValue = true)]
+        public string Description { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -61,9 +61,9 @@ namespace Telemetry.Client.Model
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class StatisticsEvent {\n");
-            sb.Append("  Date: ").Append(Date).Append("\n");
-            sb.Append("  Type: ").Append(Type).Append("\n");
+            sb.Append("class StatisticsEventType {\n");
+            sb.Append("  Name: ").Append(Name).Append("\n");
+            sb.Append("  Description: ").Append(Description).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -84,29 +84,29 @@ namespace Telemetry.Client.Model
         /// <returns>Boolean</returns>
         public override bool Equals(object input)
         {
-            return this.Equals(input as StatisticsEvent);
+            return this.Equals(input as StatisticsEventType);
         }
 
         /// <summary>
-        /// Returns true if StatisticsEvent instances are equal
+        /// Returns true if StatisticsEventType instances are equal
         /// </summary>
-        /// <param name="input">Instance of StatisticsEvent to be compared</param>
+        /// <param name="input">Instance of StatisticsEventType to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(StatisticsEvent input)
+        public bool Equals(StatisticsEventType input)
         {
             if (input == null)
                 return false;
 
             return 
                 (
-                    this.Date == input.Date ||
-                    (this.Date != null &&
-                    this.Date.Equals(input.Date))
+                    this.Name == input.Name ||
+                    (this.Name != null &&
+                    this.Name.Equals(input.Name))
                 ) && 
                 (
-                    this.Type == input.Type ||
-                    (this.Type != null &&
-                    this.Type.Equals(input.Type))
+                    this.Description == input.Description ||
+                    (this.Description != null &&
+                    this.Description.Equals(input.Description))
                 );
         }
 
@@ -119,10 +119,10 @@ namespace Telemetry.Client.Model
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                if (this.Date != null)
-                    hashCode = hashCode * 59 + this.Date.GetHashCode();
-                if (this.Type != null)
-                    hashCode = hashCode * 59 + this.Type.GetHashCode();
+                if (this.Name != null)
+                    hashCode = hashCode * 59 + this.Name.GetHashCode();
+                if (this.Description != null)
+                    hashCode = hashCode * 59 + this.Description.GetHashCode();
                 return hashCode;
             }
         }

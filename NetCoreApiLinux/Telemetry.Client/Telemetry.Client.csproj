@@ -1,7 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+      <PackageId>TelemetryCLient</PackageId>
+      <Version>1.0.0</Version>
+      <Authors>your_name</Authors>
+      <Company>your_company</Company>
+      <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Telemetry.Client</AssemblyName>
     <PackageId>Telemetry.Client</PackageId>
@@ -17,6 +21,7 @@
     <RepositoryUrl>https://github.com/GIT_USER_ID/GIT_REPO_ID.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes>Minor update</PackageReleaseNotes>
+      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

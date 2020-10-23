@@ -43,6 +43,24 @@ namespace Telemetry.Client.Api
         /// <returns>ApiResponse of List&lt;AppInfo&gt;</returns>
         ApiResponse<List<AppInfo>> StatisticsApiAppInfoAllGetWithHttpInfo();
         /// <summary>
+        /// Delete all statistics events history for device by id
+        /// </summary>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        void StatisticsApiAppInfoIdEventsHistoryDelete(Guid id);
+
+        /// <summary>
+        /// Delete all statistics events history for device by id
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns>ApiResponse of Object(void)</returns>
+        ApiResponse<Object> StatisticsApiAppInfoIdEventsHistoryDeleteWithHttpInfo(Guid id);
+        /// <summary>
         /// Get statistics events history for device by id
         /// </summary>
         /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
@@ -96,6 +114,40 @@ namespace Telemetry.Client.Api
         /// <param name="appInfoRequest"> (optional)</param>
         /// <returns>ApiResponse of Object(void)</returns>
         ApiResponse<Object> StatisticsApiAppInfoPostWithHttpInfo(AppInfoRequest appInfoRequest = default(AppInfoRequest));
+        /// <summary>
+        /// Get StatisticsEventTypes for all types
+        /// </summary>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <returns>List&lt;StatisticsEventType&gt;</returns>
+        List<StatisticsEventType> StatisticsApiEventTypesGet();
+
+        /// <summary>
+        /// Get StatisticsEventTypes for all types
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <returns>ApiResponse of List&lt;StatisticsEventType&gt;</returns>
+        ApiResponse<List<StatisticsEventType>> StatisticsApiEventTypesGetWithHttpInfo();
+        /// <summary>
+        /// Create or update StatisticsEventTypes
+        /// </summary>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="statisticsEventType"> (optional)</param>
+        /// <returns></returns>
+        void StatisticsApiEventTypesPost(List<StatisticsEventType> statisticsEventType = default(List<StatisticsEventType>));
+
+        /// <summary>
+        /// Create or update StatisticsEventTypes
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="statisticsEventType"> (optional)</param>
+        /// <returns>ApiResponse of Object(void)</returns>
+        ApiResponse<Object> StatisticsApiEventTypesPostWithHttpInfo(List<StatisticsEventType> statisticsEventType = default(List<StatisticsEventType>));
         #endregion Synchronous Operations
     }
 
@@ -126,6 +178,29 @@ namespace Telemetry.Client.Api
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (List&lt;AppInfo&gt;)</returns>
         System.Threading.Tasks.Task<ApiResponse<List<AppInfo>>> StatisticsApiAppInfoAllGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        /// <summary>
+        /// Delete all statistics events history for device by id
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of void</returns>
+        System.Threading.Tasks.Task StatisticsApiAppInfoIdEventsHistoryDeleteAsync(Guid id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <summary>
+        /// Delete all statistics events history for device by id
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse</returns>
+        System.Threading.Tasks.Task<ApiResponse<Object>> StatisticsApiAppInfoIdEventsHistoryDeleteWithHttpInfoAsync(Guid id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
         /// <summary>
         /// Get statistics events history for device by id
         /// </summary>
@@ -195,6 +270,50 @@ namespace Telemetry.Client.Api
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse</returns>
         System.Threading.Tasks.Task<ApiResponse<Object>> StatisticsApiAppInfoPostWithHttpInfoAsync(AppInfoRequest appInfoRequest = default(AppInfoRequest), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        /// <summary>
+        /// Get StatisticsEventTypes for all types
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of List&lt;StatisticsEventType&gt;</returns>
+        System.Threading.Tasks.Task<List<StatisticsEventType>> StatisticsApiEventTypesGetAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <summary>
+        /// Get StatisticsEventTypes for all types
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse (List&lt;StatisticsEventType&gt;)</returns>
+        System.Threading.Tasks.Task<ApiResponse<List<StatisticsEventType>>> StatisticsApiEventTypesGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        /// <summary>
+        /// Create or update StatisticsEventTypes
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="statisticsEventType"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of void</returns>
+        System.Threading.Tasks.Task StatisticsApiEventTypesPostAsync(List<StatisticsEventType> statisticsEventType = default(List<StatisticsEventType>), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
+        /// <summary>
+        /// Create or update StatisticsEventTypes
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="statisticsEventType"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse</returns>
+        System.Threading.Tasks.Task<ApiResponse<Object>> StatisticsApiEventTypesPostWithHttpInfoAsync(List<StatisticsEventType> statisticsEventType = default(List<StatisticsEventType>), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
         #endregion Asynchronous Operations
     }
 
@@ -414,6 +533,109 @@ namespace Telemetry.Client.Api
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("StatisticsApiAppInfoAllGet", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        /// Delete all statistics events history for device by id 
+        /// </summary>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public void StatisticsApiAppInfoIdEventsHistoryDelete(Guid id)
+        {
+            StatisticsApiAppInfoIdEventsHistoryDeleteWithHttpInfo(id);
+        }
+
+        /// <summary>
+        /// Delete all statistics events history for device by id 
+        /// </summary>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns>ApiResponse of Object(void)</returns>
+        public Telemetry.Client.Client.ApiResponse<Object> StatisticsApiAppInfoIdEventsHistoryDeleteWithHttpInfo(Guid id)
+        {
+            Telemetry.Client.Client.RequestOptions localVarRequestOptions = new Telemetry.Client.Client.RequestOptions();
+
+            String[] _contentTypes = new String[] {
+            };
+
+            // to determine the Accept header
+            String[] _accepts = new String[] {
+            };
+
+            var localVarContentType = Telemetry.Client.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = Telemetry.Client.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("id", Telemetry.Client.Client.ClientUtils.ParameterToString(id)); // path parameter
+
+
+            // make the HTTP request
+            var localVarResponse = this.Client.Delete<Object>("/statistics/api/appInfo/{id}/events-history", localVarRequestOptions, this.Configuration);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("StatisticsApiAppInfoIdEventsHistoryDelete", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        /// Delete all statistics events history for device by id 
+        /// </summary>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of void</returns>
+        public async System.Threading.Tasks.Task StatisticsApiAppInfoIdEventsHistoryDeleteAsync(Guid id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            await StatisticsApiAppInfoIdEventsHistoryDeleteWithHttpInfoAsync(id, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Delete all statistics events history for device by id 
+        /// </summary>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse</returns>
+        public async System.Threading.Tasks.Task<Telemetry.Client.Client.ApiResponse<Object>> StatisticsApiAppInfoIdEventsHistoryDeleteWithHttpInfoAsync(Guid id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+
+            Telemetry.Client.Client.RequestOptions localVarRequestOptions = new Telemetry.Client.Client.RequestOptions();
+
+            String[] _contentTypes = new String[] {
+            };
+
+            // to determine the Accept header
+            String[] _accepts = new String[] {
+            };
+
+
+            var localVarContentType = Telemetry.Client.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = Telemetry.Client.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("id", Telemetry.Client.Client.ClientUtils.ParameterToString(id)); // path parameter
+
+
+            // make the HTTP request
+
+            var localVarResponse = await this.AsynchronousClient.DeleteAsync<Object>("/statistics/api/appInfo/{id}/events-history", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("StatisticsApiAppInfoIdEventsHistoryDelete", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -745,6 +967,220 @@ namespace Telemetry.Client.Api
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("StatisticsApiAppInfoPost", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        /// Get StatisticsEventTypes for all types 
+        /// </summary>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <returns>List&lt;StatisticsEventType&gt;</returns>
+        public List<StatisticsEventType> StatisticsApiEventTypesGet()
+        {
+            Telemetry.Client.Client.ApiResponse<List<StatisticsEventType>> localVarResponse = StatisticsApiEventTypesGetWithHttpInfo();
+            return localVarResponse.Data;
+        }
+
+        /// <summary>
+        /// Get StatisticsEventTypes for all types 
+        /// </summary>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <returns>ApiResponse of List&lt;StatisticsEventType&gt;</returns>
+        public Telemetry.Client.Client.ApiResponse<List<StatisticsEventType>> StatisticsApiEventTypesGetWithHttpInfo()
+        {
+            Telemetry.Client.Client.RequestOptions localVarRequestOptions = new Telemetry.Client.Client.RequestOptions();
+
+            String[] _contentTypes = new String[] {
+            };
+
+            // to determine the Accept header
+            String[] _accepts = new String[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+            var localVarContentType = Telemetry.Client.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = Telemetry.Client.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+
+
+            // make the HTTP request
+            var localVarResponse = this.Client.Get<List<StatisticsEventType>>("/statistics/api/event-types", localVarRequestOptions, this.Configuration);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("StatisticsApiEventTypesGet", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        /// Get StatisticsEventTypes for all types 
+        /// </summary>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of List&lt;StatisticsEventType&gt;</returns>
+        public async System.Threading.Tasks.Task<List<StatisticsEventType>> StatisticsApiEventTypesGetAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            Telemetry.Client.Client.ApiResponse<List<StatisticsEventType>> localVarResponse = await StatisticsApiEventTypesGetWithHttpInfoAsync(cancellationToken).ConfigureAwait(false);
+            return localVarResponse.Data;
+        }
+
+        /// <summary>
+        /// Get StatisticsEventTypes for all types 
+        /// </summary>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse (List&lt;StatisticsEventType&gt;)</returns>
+        public async System.Threading.Tasks.Task<Telemetry.Client.Client.ApiResponse<List<StatisticsEventType>>> StatisticsApiEventTypesGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+
+            Telemetry.Client.Client.RequestOptions localVarRequestOptions = new Telemetry.Client.Client.RequestOptions();
+
+            String[] _contentTypes = new String[] {
+            };
+
+            // to determine the Accept header
+            String[] _accepts = new String[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+
+            var localVarContentType = Telemetry.Client.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = Telemetry.Client.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+
+
+            // make the HTTP request
+
+            var localVarResponse = await this.AsynchronousClient.GetAsync<List<StatisticsEventType>>("/statistics/api/event-types", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("StatisticsApiEventTypesGet", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        /// Create or update StatisticsEventTypes 
+        /// </summary>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="statisticsEventType"> (optional)</param>
+        /// <returns></returns>
+        public void StatisticsApiEventTypesPost(List<StatisticsEventType> statisticsEventType = default(List<StatisticsEventType>))
+        {
+            StatisticsApiEventTypesPostWithHttpInfo(statisticsEventType);
+        }
+
+        /// <summary>
+        /// Create or update StatisticsEventTypes 
+        /// </summary>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="statisticsEventType"> (optional)</param>
+        /// <returns>ApiResponse of Object(void)</returns>
+        public Telemetry.Client.Client.ApiResponse<Object> StatisticsApiEventTypesPostWithHttpInfo(List<StatisticsEventType> statisticsEventType = default(List<StatisticsEventType>))
+        {
+            Telemetry.Client.Client.RequestOptions localVarRequestOptions = new Telemetry.Client.Client.RequestOptions();
+
+            String[] _contentTypes = new String[] {
+                "application/json",
+                "text/json",
+                "application/_*+json"
+            };
+
+            // to determine the Accept header
+            String[] _accepts = new String[] {
+            };
+
+            var localVarContentType = Telemetry.Client.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = Telemetry.Client.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = statisticsEventType;
+
+
+            // make the HTTP request
+            var localVarResponse = this.Client.Post<Object>("/statistics/api/event-types", localVarRequestOptions, this.Configuration);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("StatisticsApiEventTypesPost", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        /// Create or update StatisticsEventTypes 
+        /// </summary>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="statisticsEventType"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of void</returns>
+        public async System.Threading.Tasks.Task StatisticsApiEventTypesPostAsync(List<StatisticsEventType> statisticsEventType = default(List<StatisticsEventType>), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            await StatisticsApiEventTypesPostWithHttpInfoAsync(statisticsEventType, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Create or update StatisticsEventTypes 
+        /// </summary>
+        /// <exception cref="Telemetry.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="statisticsEventType"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse</returns>
+        public async System.Threading.Tasks.Task<Telemetry.Client.Client.ApiResponse<Object>> StatisticsApiEventTypesPostWithHttpInfoAsync(List<StatisticsEventType> statisticsEventType = default(List<StatisticsEventType>), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+
+            Telemetry.Client.Client.RequestOptions localVarRequestOptions = new Telemetry.Client.Client.RequestOptions();
+
+            String[] _contentTypes = new String[] {
+                "application/json", 
+                "text/json", 
+                "application/_*+json"
+            };
+
+            // to determine the Accept header
+            String[] _accepts = new String[] {
+            };
+
+
+            var localVarContentType = Telemetry.Client.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = Telemetry.Client.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = statisticsEventType;
+
+
+            // make the HTTP request
+
+            var localVarResponse = await this.AsynchronousClient.PostAsync<Object>("/statistics/api/event-types", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("StatisticsApiEventTypesPost", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
