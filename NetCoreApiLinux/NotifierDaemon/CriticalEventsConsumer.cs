@@ -6,18 +6,18 @@ using DataLayer.Kafka;
 
 namespace NotifierDaemon
 {
-    public interface IRunner
+    public interface ICriticalEventsConsumer
     {
-        void Run();
+        void ProcessEvents();
     }
 
-    public class Runner
+    public class CriticalEventsConsumer : ICriticalEventsConsumer
     {
         private readonly IKafkaSettings kafkaSettings;
         private readonly IConsumerSettings consumerSettings;
         private readonly IMailSender mailSender;
 
-        public Runner(
+        public CriticalEventsConsumer(
             IKafkaSettings kafkaSettings,
             IConsumerSettings consumerSettings,
             IMailSender mailSender)
@@ -27,7 +27,7 @@ namespace NotifierDaemon
             this.mailSender = mailSender;
         }
 
-        public void Run()
+        public void ProcessEvents()
         {
             var conf = new ConsumerConfig
             {
@@ -36,6 +36,7 @@ namespace NotifierDaemon
                 AutoOffsetReset = AutoOffsetReset.Earliest
             };
 
+            Console.WriteLine("Start consuming");
 
             using (var c = new ConsumerBuilder<Ignore, string>(conf).Build())
             {

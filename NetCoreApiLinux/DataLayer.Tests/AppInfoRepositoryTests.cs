@@ -35,7 +35,7 @@ namespace DataLayer.Tests
             //mongoDbProvider.SetupGet(x => x.Db).Returns(db.Object);
 
             //Repository = new AppInfoRepository(mongoDbProvider.Object);
-            //await Repository.GetAllAsync();
+            //await Repository.GetByDeviceIdAsync();
 
             //db.Verify(x =>
             //    x.GetCollection<AppInfoDbo>(

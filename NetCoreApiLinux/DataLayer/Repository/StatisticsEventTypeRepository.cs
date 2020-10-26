@@ -10,37 +10,31 @@ namespace DataLayer.Repository
 {
     public interface IStatisticsEventTypeRepository
     {
-        Task<Dictionary<string, StatisticsEventTypeDbo>> GetAllAsync();
+        Task<StatisticsEventTypeDbo[]> GetAllAsync();
         Task<StatisticsEventTypeDbo[]> FindByNameAsync(string name);
         Task AddOrUpdateAsync(StatisticsEventTypeDbo[] dbos);
-        Task DeleteByNameAsync(string name);
     }
 
     public class StatisticsEventTypeRepository : IStatisticsEventTypeRepository
     {
         private readonly IClientSessionHandle session;
         private readonly IMongoDatabase db;
-        private IMemoryCache cache;
 
-        public StatisticsEventTypeRepository(IMongoDatabase db, IClientSessionHandle session, IMemoryCache cache)
+        public StatisticsEventTypeRepository(IMongoDatabase db, IClientSessionHandle session)
         {
             this.session = session;
             this.db = db;
-            this.cache = cache;
         }
 
-        public async Task<Dictionary<string, StatisticsEventTypeDbo>> GetAllAsync()
+        public async Task<StatisticsEventTypeDbo[]> GetAllAsync()
         {
-            return await cache.GetOrCreateAsync(
-                nameof(GetAllAsync),
-                async entry =>
-                {
-                    entry.SlidingExpiration = TimeSpan.FromMinutes(1);
-                    
-                    return (await GetAllWithoutCacheAsync().ConfigureAwait(false))
-                        .ToDictionary(x => x.Name, x => x);
-                });
-    }
+            return (await Types
+                    .WithReadPreference(ReadPreference.SecondaryPreferred)
+                    .FindAsync(session, _ => true)
+                    .ConfigureAwait(false))
+                .ToList()
+                .ToArray();
+        }
 
         public async Task<StatisticsEventTypeDbo[]> FindByNameAsync(string name)
         {
@@ -64,37 +58,8 @@ namespace DataLayer.Repository
                         Builders<StatisticsEventTypeDbo>.Filter.Eq(x => x.Name, item.Name),
                         item,
                         new ReplaceOptions {IsUpsert = true});
-
-            await UpdateCache();
-        }
-
-        public Task DeleteByNameAsync(string name)
-        {
-            var filterEq = Builders<StatisticsEventTypeDbo>.Filter.Eq(x => x.Name, name);
-
-            return Types
-                .WithWriteConcern(WriteConcern.WMajority)
-                .DeleteOneAsync(session, filterEq);
         }
 
         private IMongoCollection<StatisticsEventTypeDbo> Types => db.GetCollection<StatisticsEventTypeDbo>("StatisticsEventTypes");
-
-        private async Task<StatisticsEventTypeDbo[]> GetAllWithoutCacheAsync()
-        {
-            return (await Types
-                    .WithReadPreference(ReadPreference.SecondaryPreferred)
-                    .FindAsync(session, _ => true)
-                    .ConfigureAwait(false))
-                .ToList()
-                .ToArray();
-        }
-
-        private async Task UpdateCache()
-        {
-            var allTypes = (await GetAllWithoutCacheAsync().ConfigureAwait(false))
-                .ToDictionary(x => x.Name, x => x);
-
-            using var entry = cache.CreateEntry(nameof(GetAllAsync)).SetValue(allTypes).SetSlidingExpiration(TimeSpan.FromMinutes(1));
-        }
     }
 }

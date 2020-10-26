@@ -1,6 +1,6 @@
 namespace NetCoreApiLinux.Models.AppInfo
 {
-    public class StatisticsEventType
+    public class StatisticsEventTypeDto
     {
         public string Name { get; set; }
         public string Description { get; set; }

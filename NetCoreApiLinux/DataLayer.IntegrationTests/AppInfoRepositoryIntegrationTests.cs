@@ -40,15 +40,16 @@ namespace DataLayer.IntegrationTests
         [Theory, AutoData]
         public async Task GetAllAsync_DbContainsSome_ShouldReturnAll(AppInfoDbo dbo1, AppInfoDbo dbo2)
         {
-            await using var uof = unitOfWorkFactory.Create();
+            using var uof = unitOfWorkFactory.Create();
             var repository = uof.GetRepository<IAppInfoRepository>();
 
             await repository.AddOrUpdateAsync(dbo1);
             await repository.AddOrUpdateAsync(dbo2);
-            var all = await repository.GetAllAsync();
 
+            var all = await repository.GetAllAsync();
             await repository.DeleteByIdAsync(dbo1.Id);
             await repository.DeleteByIdAsync(dbo2.Id);
+            await uof.SaveChanges();
 
             all.Should().HaveCount(2);
             (await repository.GetAllAsync()).Should().HaveCount(0);
@@ -57,7 +58,7 @@ namespace DataLayer.IntegrationTests
         [Theory, AutoData]
         public async Task FindAsync_DbContainsOne_ShouldFindOne(AppInfoDbo dbo)
         {
-            await using var uof = unitOfWorkFactory.Create();
+            using var uof = unitOfWorkFactory.Create();
             var repository = uof.GetRepository<IAppInfoRepository>();
 
             await repository.AddOrUpdateAsync(dbo);
@@ -65,6 +66,8 @@ namespace DataLayer.IntegrationTests
             (await repository.FindAsync(dbo.Id)).Should().BeEquivalentTo(dbo);
 
             await repository.DeleteByIdAsync(dbo.Id);
+            await uof.SaveChanges();
+
         }
     }
 }

@@ -17,13 +17,11 @@ namespace DataLayer.Repository
     public class AppInfoRepository : IAppInfoRepository
     {
         private readonly IClientSessionHandle session;
-        private readonly IMemoryCache cache;
         private readonly IMongoDatabase db;
 
-        public AppInfoRepository(IMongoDatabase db, IClientSessionHandle session, IMemoryCache cache)
+        public AppInfoRepository(IMongoDatabase db, IClientSessionHandle session)
         {
             this.session = session;
-            this.cache = cache;
             this.db = db;
         }
 

@@ -18,13 +18,11 @@ namespace DataLayer.Repository
     public class StatisticsEventRepository : IStatisticsEventRepository
     {
         private readonly IClientSessionHandle session;
-        private readonly IMemoryCache cache;
         private readonly IMongoDatabase db;
 
-        public StatisticsEventRepository(IMongoDatabase db, IClientSessionHandle session, IMemoryCache cache)
+        public StatisticsEventRepository(IMongoDatabase db, IClientSessionHandle session)
         {
             this.session = session;
-            this.cache = cache;
             this.db = db;
         }
 

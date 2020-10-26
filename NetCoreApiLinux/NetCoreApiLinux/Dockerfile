@@ -11,6 +11,7 @@ COPY Sandbox/*.csproj ./Sandbox/
 COPY Telemetry.Client/*.csproj ./Telemetry.Client/
 COPY Telemetry.Client.Test/*.csproj ./Telemetry.Client.Test/
 COPY MongoMigrations/*.csproj ./MongoMigrations/
+COPY NotifierDaemon/*.csproj ./NotifierDaemon/
 RUN dotnet restore NetCoreApiLinux.sln
 
 COPY NetCoreApiLinux/. ./NetCoreApiLinux/
@@ -21,6 +22,7 @@ COPY Sandbox/. ./Sandbox/
 COPY Telemetry.Client/. ./Telemetry.Clients/
 COPY Telemetry.Client.Test/. ./Telemetry.Client.Test/
 COPY MongoMigrations/. ./MongoMigrations/
+COPY NotifierDaemon/. ./NotifierDaemon/
 WORKDIR /app/NetCoreApiLinux
 RUN dotnet publish "NetCoreApiLinux.csproj" -c Release -o /out --no-restore
 

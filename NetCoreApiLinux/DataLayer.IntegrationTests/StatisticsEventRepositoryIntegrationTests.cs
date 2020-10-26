@@ -43,7 +43,7 @@ namespace DataLayer.IntegrationTests
         [Theory, AutoData]
         public async Task GetAllAsync_DbContainsSome_ShouldReturnAll(StatisticsEventDbo dbo1, StatisticsEventDbo dbo2, Guid deviceId)
         {
-            await using var uof = unitOfWorkFactory.Create();
+            using var uof = unitOfWorkFactory.Create();
             var repository = uof.GetRepository<IStatisticsEventRepository>();
 
             await repository.AddAsync(new [] { dbo1, dbo2 }, deviceId.ToString());
@@ -58,7 +58,7 @@ namespace DataLayer.IntegrationTests
         [Theory, AutoData]
         public async Task FindByDeviceIdAsync_DbContainsSome_ShouldFindThem(StatisticsEventDbo dbo1, StatisticsEventDbo dbo2, Guid deviceId)
         {
-            await using var uof = unitOfWorkFactory.Create();
+            using var uof = unitOfWorkFactory.Create();
             var repository = uof.GetRepository<IStatisticsEventRepository>();
 
             await repository.AddAsync(new[] { dbo1, dbo2 }, deviceId.ToString());

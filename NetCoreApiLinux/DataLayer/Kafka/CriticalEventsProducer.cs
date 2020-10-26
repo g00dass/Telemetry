@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using Confluent.Kafka;
+using DataLayer.Models.AppInfo;
 using MoreLinq;
 using Serilog;
 
@@ -10,20 +11,22 @@ namespace DataLayer.Kafka
 {
     public interface ICriticalEventsProducer
     {
-        void Send(IEnumerable<CriticalEventMessage> events);
+        void Send(Guid id, IEnumerable<StatisticsEvent> events);
     }
 
     public class CriticalEventsProducer : ICriticalEventsProducer
     {
         private static readonly ILogger log = Log.ForContext<CriticalEventsProducer>();
         private readonly IKafkaSettings kafkaSettings;
+        private readonly ICriticalEventMessageBuilder messageBuilder;
 
-        public CriticalEventsProducer(IKafkaSettings kafkaSettings)
+        public CriticalEventsProducer(IKafkaSettings kafkaSettings, ICriticalEventMessageBuilder messageBuilder)
         {
             this.kafkaSettings = kafkaSettings;
+            this.messageBuilder = messageBuilder;
         }
 
-        public void Send(IEnumerable<CriticalEventMessage> events)
+        public void Send(Guid id, IEnumerable<StatisticsEvent> events)
         {
             var config = new ProducerConfig { BootstrapServers = kafkaSettings.BootstrapServers };
 
@@ -37,7 +40,7 @@ namespace DataLayer.Kafka
 
             using (var p = new ProducerBuilder<Null, string>(config).Build())
             {
-                foreach (var batch in events.Batch(100))
+                foreach (var batch in events.Select(x => messageBuilder.Build(id, x)).Batch(100))
                 {
                     batch.ForEach(x =>
                         p.Produce(

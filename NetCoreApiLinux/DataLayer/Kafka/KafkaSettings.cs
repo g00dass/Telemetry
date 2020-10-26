@@ -7,7 +7,7 @@ namespace DataLayer.Kafka
 
     public class KafkaSettings : IKafkaSettings
     {
-        public string BootstrapServers => "localhost:9092";
+        public string BootstrapServers => "kafka:9092";
     }
 
     public static class KafkaTopics

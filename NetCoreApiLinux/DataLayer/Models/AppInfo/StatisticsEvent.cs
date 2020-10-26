@@ -1,6 +1,6 @@
 using System;
 
-namespace NetCoreApiLinux.Models.AppInfo
+namespace DataLayer.Models.AppInfo
 {
     public class StatisticsEvent
     {

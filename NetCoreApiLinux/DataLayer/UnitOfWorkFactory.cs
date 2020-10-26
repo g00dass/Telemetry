@@ -11,19 +11,17 @@ namespace DataLayer
     {
         private readonly IMongoClientProvider mongoClientProvider;
         private readonly IMongoDbSettings settings;
-        private readonly IMemoryCache cache;
 
         public UnitOfWorkFactory(
-            IMongoClientProvider mongoClientProvider, IMongoDbSettings settings, IMemoryCache cache)
+            IMongoClientProvider mongoClientProvider, IMongoDbSettings settings)
         {
             this.mongoClientProvider = mongoClientProvider;
             this.settings = settings;
-            this.cache = cache;
         }
 
         public IUnitOfWork Create()
         {
-            return new UnitOfWork(mongoClientProvider.Client, settings, cache);
+            return new UnitOfWork(mongoClientProvider.Client, settings);
         }
     }
 }

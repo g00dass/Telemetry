@@ -3,6 +3,9 @@ using System;
 using System.IO;
 using System.Reflection;
 using DataLayer.Dbo;
+using DataLayer.Kafka;
+using DataLayer.Models.AppInfo;
+using DataLayer.Providers;
 using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +18,7 @@ using Mongo.Migration.Documents;
 using Mongo.Migration.Startup;
 using Mongo.Migration.Startup.DotNetCore;
 using NetCoreApiLinux.Models.AppInfo;
+using NetCoreApiLinux.Models.AppInfo.Requests;
 
 namespace NetCoreApiLinux
 {
@@ -46,12 +50,22 @@ namespace NetCoreApiLinux
             services.AddSingleton(x => x.GetRequiredService<IMongoClientProvider>().Client);
 
             services.AddSingleton<IMemoryCache, MemoryCache>();
+            services.AddSingleton<ICriticalEventsProducer, CriticalEventsProducer>();
+            services.AddSingleton<ICriticalEventMessageBuilder,CriticalEventMessageBuilder>();
+            services.AddSingleton<IKafkaSettings, KafkaSettings>();
+
+            services.AddSingleton<IStatisticsEventProvider, StatisticsEventProvider>();
+            services.AddSingleton<IStatisticsEventTypeProvider, StatisticsEventTypeProvider>();
+            services.AddSingleton<IStatisticsEventTypeSaver, StatisticsEventTypeSaver>();
 
             var mongoSettings = new MongoDbSettings();
             Configuration.GetSection("MongoDbSettings").Bind(mongoSettings);
             services.AddSingleton<IMongoDbSettings>(mongoSettings);
 
             TypeAdapterConfig<StatisticsEventDbo, StatisticsEvent>.NewConfig()
+                .Unflattening(true);
+
+            TypeAdapterConfig<StatisticsEventRequestDto, StatisticsEvent>.NewConfig()
                 .Unflattening(true);
         }
 

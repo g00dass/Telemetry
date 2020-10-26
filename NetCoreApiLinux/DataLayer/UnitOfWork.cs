@@ -1,17 +1,15 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
 using MongoDB.Driver;
 using Serilog;
 
 namespace DataLayer
 {
-    public interface IUnitOfWork : IAsyncDisposable
+    public interface IUnitOfWork : IDisposable
     {
         Task SaveChanges();
         T GetRepository<T>();
@@ -21,21 +19,19 @@ namespace DataLayer
     {
         private readonly IMongoClient mongoClient;
         private readonly IMongoDbSettings settings;
-        private readonly IMemoryCache cache;
         private readonly IClientSessionHandle session;
 
-        public UnitOfWork(IMongoClient mongoClient, IMongoDbSettings settings, IMemoryCache cache)
+        public UnitOfWork(IMongoClient mongoClient, IMongoDbSettings settings)
         {
             this.mongoClient = mongoClient;
             this.settings = settings;
-            this.cache = cache;
             session = mongoClient.StartSession();
             session.StartTransaction();
         }
 
         public T GetRepository<T>()
         {
-            return RepositoryInitializer<T>.Get()(new object[]{mongoClient.GetDatabase(settings.DatabaseName), session, cache});
+            return RepositoryInitializer<T>.Get()(new object[]{mongoClient.GetDatabase(settings.DatabaseName), session});
         }
 
         public async Task SaveChanges()
@@ -52,9 +48,8 @@ namespace DataLayer
             }
         }
 
-        public async ValueTask DisposeAsync()
+        public void Dispose()
         {
-            await SaveChanges();
             session?.Dispose();
         }
 
@@ -78,7 +73,7 @@ namespace DataLayer
                                 BindingFlags.Instance | BindingFlags.Public,
                                 null,
                                 CallingConventions.HasThis,
-                                new Type[] { typeof(IMongoDatabase), typeof(IClientSessionHandle), typeof(IMemoryCache) },
+                                new Type[] { typeof(IMongoDatabase), typeof(IClientSessionHandle)},
                                 null));
                     });
 
