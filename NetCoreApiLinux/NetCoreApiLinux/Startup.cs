@@ -19,6 +19,7 @@ using Mongo.Migration.Startup;
 using Mongo.Migration.Startup.DotNetCore;
 using NetCoreApiLinux.Models.AppInfo;
 using NetCoreApiLinux.Models.AppInfo.Requests;
+using NotifierDaemon;
 
 namespace NetCoreApiLinux
 {
@@ -61,6 +62,14 @@ namespace NetCoreApiLinux
             var mongoSettings = new MongoDbSettings();
             Configuration.GetSection("MongoDbSettings").Bind(mongoSettings);
             services.AddSingleton<IMongoDbSettings>(mongoSettings);
+
+            var consumerSettings = new ConsumerSettings();
+            Configuration.GetSection("ConsumerSettings").Bind(consumerSettings);
+            services.AddSingleton<IConsumerSettings>(consumerSettings);
+
+            services.AddSingleton<ICriticalEventsConsumer, CriticalEventsConsumer>();
+            services.AddSingleton<IMailSender, MailSender>();
+            services.AddHostedService<NotifierDaemonService>();
 
             TypeAdapterConfig<StatisticsEventDbo, StatisticsEvent>.NewConfig()
                 .Unflattening(true);

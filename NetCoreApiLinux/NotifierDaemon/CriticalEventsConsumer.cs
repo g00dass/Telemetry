@@ -3,16 +3,18 @@ using System.Text.Json;
 using System.Threading;
 using Confluent.Kafka;
 using DataLayer.Kafka;
+using Serilog;
 
 namespace NotifierDaemon
 {
     public interface ICriticalEventsConsumer
     {
-        void ProcessEvents();
+        void ProcessEvents(CancellationToken token);
     }
 
     public class CriticalEventsConsumer : ICriticalEventsConsumer
     {
+        private static readonly ILogger log = Log.ForContext<CriticalEventsConsumer>();
         private readonly IKafkaSettings kafkaSettings;
         private readonly IConsumerSettings consumerSettings;
         private readonly IMailSender mailSender;
@@ -27,7 +29,7 @@ namespace NotifierDaemon
             this.mailSender = mailSender;
         }
 
-        public void ProcessEvents()
+        public void ProcessEvents(CancellationToken token)
         {
             var conf = new ConsumerConfig
             {
@@ -36,17 +38,11 @@ namespace NotifierDaemon
                 AutoOffsetReset = AutoOffsetReset.Earliest
             };
 
-            Console.WriteLine("Start consuming");
+            log.Information("Start consuming");
 
             using (var c = new ConsumerBuilder<Ignore, string>(conf).Build())
             {
                 c.Subscribe(KafkaTopics.CriticalEvents_V_1);
-
-                CancellationTokenSource cts = new CancellationTokenSource();
-                Console.CancelKeyPress += (_, e) => {
-                    e.Cancel = true; // prevent the process from terminating.
-                    cts.Cancel();
-                };
 
                 try
                 {
@@ -54,15 +50,15 @@ namespace NotifierDaemon
                     {
                         try
                         {
-                            var cr = c.Consume(cts.Token);
+                            var cr = c.Consume(token);
                             var msg = JsonSerializer.Deserialize<CriticalEventMessage>(cr.Message.Value);
-                            Console.WriteLine($"Consumed message '{cr.Value}' at: '{cr.TopicPartitionOffset}'.");
+                            log.Information($"Consumed message '{cr.Value}' at: '{cr.TopicPartitionOffset}'.");
 
                             mailSender.Send(msg);
                         }
                         catch (ConsumeException e)
                         {
-                            Console.WriteLine($"Error occured: {e.Error.Reason}");
+                            log.Error($"Error occured: {e.Error.Reason}");
                         }
                     }
                 }

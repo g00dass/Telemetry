@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
+    <ProjectReference Include="..\NotifierDaemon\NotifierDaemon.csproj" />
   </ItemGroup>
 
 
