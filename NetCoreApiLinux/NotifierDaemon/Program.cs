@@ -6,8 +6,7 @@ namespace NotifierDaemon
     {
         static void Main(string[] args)
         {
-            var services = ContainerConfig.Configure(new ServiceCollection());
-            var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = new ServiceCollection().Configure().BuildServiceProvider();
 
             var consumer = serviceProvider.GetService<ICriticalEventsConsumer>();
             consumer.ProcessEvents();

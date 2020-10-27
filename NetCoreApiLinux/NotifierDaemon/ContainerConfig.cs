@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace NotifierDaemon
 {
-    public class ContainerConfig
+    public static class ContainerConfig
     {
-        public static IServiceCollection Configure(IServiceCollection services)
+        public static IServiceCollection Configure(this IServiceCollection services)
         {
             var environmentName = Environment.GetEnvironmentVariable("Hosting:Environment");
             var configuration = new ConfigurationBuilder()
